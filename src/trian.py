@@ -20,6 +20,8 @@ class TriAN(nn.Module):
         self.ner_embedding.weight.data.normal_(0, 0.1)
         self.rel_embedding = nn.Embedding(len(rel_vocab), args.rel_emb_dim, padding_idx=0)
         self.rel_embedding.weight.data.normal_(0, 0.1)
+        self.four_lang_embedding = nn.Embedding(101, args.four_lang_emb_dim, padding_idx=0)
+        self.four_lang_embedding.weight.data.normal_(0, 0.1)
         self.RNN_TYPES = {'lstm': nn.LSTM, 'gru': nn.GRU}
 
         self.p_q_emb_match = layers.SeqAttnMatch(self.embedding_dim)
@@ -78,10 +80,15 @@ class TriAN(nn.Module):
         self.p_c_bilinear = nn.Linear(doc_hidden_size, choice_hidden_size)
         self.q_c_bilinear = nn.Linear(question_hidden_size, choice_hidden_size)
 
-    def forward(self, p, p_pos, p_ner, p_mask, q, q_pos, q_mask, c, c_mask, f_tensor, p_q_relation, p_c_relation):
+    def forward(self, p, p_pos, p_ner, p_mask, q, q_pos, q_mask, c, c_mask, f_tensor, p_q_relation, p_c_relation,
+                p_q_four_lang_relation, p_c_four_lang_relation, q_c_four_lang_relation):
         p_emb, q_emb, c_emb = self.embedding(p), self.embedding(q), self.embedding(c)
         p_pos_emb, p_ner_emb, q_pos_emb = self.pos_embedding(p_pos), self.ner_embedding(p_ner), self.pos_embedding(q_pos)
         p_q_rel_emb, p_c_rel_emb = self.rel_embedding(p_q_relation), self.rel_embedding(p_c_relation)
+        p_q_four_lang_emb, p_c_four_lang_emb, q_c_four_lang_emb =\
+            self.four_lang_embedding(p_q_four_lang_relation),\
+            self.four_lang_embedding(p_c_four_lang_relation),\
+            self.four_lang_embedding(q_c_four_lang_relation)
 
         # Dropout on embeddings
         if self.args.dropout_emb > 0:
@@ -93,6 +100,9 @@ class TriAN(nn.Module):
             q_pos_emb = nn.functional.dropout(q_pos_emb, p=self.args.dropout_emb, training=self.training)
             p_q_rel_emb = nn.functional.dropout(p_q_rel_emb, p=self.args.dropout_emb, training=self.training)
             p_c_rel_emb = nn.functional.dropout(p_c_rel_emb, p=self.args.dropout_emb, training=self.training)
+            p_q_four_lang_emb = nn.functional.dropout(p_q_four_lang_emb, p=self.args.dropout_emb, training=self.training)
+            p_c_four_lang_emb = nn.functional.dropout(p_c_four_lang_emb, p=self.args.dropout_emb, training=self.training)
+            q_c_four_lang_emb = nn.functional.dropout(q_c_four_lang_emb, p=self.args.dropout_emb, training=self.training)
 
         p_q_weighted_emb = self.p_q_emb_match(p_emb, q_emb, q_mask)
         c_q_weighted_emb = self.c_q_emb_match(c_emb, q_emb, q_mask)
@@ -103,8 +113,8 @@ class TriAN(nn.Module):
         # print('p_q_weighted_emb', p_q_weighted_emb.size())
 
         p_rnn_input = torch.cat([p_emb, p_q_weighted_emb, p_pos_emb, p_ner_emb, f_tensor, p_q_rel_emb, p_c_rel_emb], dim=2)
-        c_rnn_input = torch.cat([c_emb, c_q_weighted_emb, c_p_weighted_emb], dim=2)
-        q_rnn_input = torch.cat([q_emb, q_pos_emb], dim=2)
+        c_rnn_input = torch.cat([c_emb, c_q_weighted_emb, c_p_weighted_emb, q_c_four_lang_emb, p_c_four_lang_emb], dim=2)
+        q_rnn_input = torch.cat([q_emb, q_pos_emb, p_q_four_lang_emb], dim=2)
         # print('p_rnn_input', p_rnn_input.size())
 
         p_hiddens = self.doc_rnn(p_rnn_input, p_mask)

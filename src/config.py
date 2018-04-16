@@ -28,6 +28,7 @@ parser.add_argument('--finetune_topk', type=int, default=10, help='Finetune topk
 parser.add_argument('--pos_emb_dim', type=int, default=12, help='Embedding dimension for part-of-speech')
 parser.add_argument('--ner_emb_dim', type=int, default=8, help='Embedding dimension for named entities')
 parser.add_argument('--rel_emb_dim', type=int, default=10, help='Embedding dimension for ConceptNet relations')
+parser.add_argument('--four_lang_emb_dim', type=int, default=10, help='Embedding dimension for 4lang relations')
 parser.add_argument('--seed', type=int, default=1234, help='random seed')
 parser.add_argument('--test_mode', type='bool', default=False, help='In test mode, validation data will be used for training')
 args = parser.parse_args()

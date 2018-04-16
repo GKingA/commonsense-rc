@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
+
 class StackedBRNN(nn.Module):
     """Stacked Bi-directional RNNs.
 

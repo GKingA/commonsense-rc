@@ -43,7 +43,10 @@ class ConceptNet:
                     break
         return ret
 
+
 concept_net = ConceptNet()
+
+
 if __name__ == '__main__':
     net = ConceptNet()
     print(net.get_relation('positive', 'negative'))

@@ -4,30 +4,39 @@ import string
 import wikiwords
 import unicodedata
 import numpy as np
+import re
 
 from collections import Counter
 from nltk.corpus import stopwords
 
 words = frozenset(stopwords.words('english'))
 punc = frozenset(string.punctuation)
+
+
 def is_stopword(w):
     return w.lower() in words
+
 
 def is_punc(c):
     return c in punc
 
+
 baseline = wikiwords.freq('the')
+
+
 def get_idf(w):
     return np.log(baseline / (wikiwords.freq(w.lower()) + 1e-10))
 
+
 def load_data(path):
-    from doc import Example
+    from .doc import Example
     data = []
     for line in open(path, 'r', encoding='utf-8'):
         if path.find('race') < 0 or np.random.random() < 0.6:
             data.append(Example(json.loads(line)))
     print('Load %d examples from %s...' % (len(data), path))
     return data
+
 
 class Dictionary(object):
     NULL = '<NULL>'
@@ -86,7 +95,82 @@ class Dictionary(object):
                   if k not in {'<NULL>', '<UNK>'}]
         return tokens
 
+
+class Utils:
+
+    def d_clean(self, string):
+        s = string
+        for c in '\\=@-,\'".!:;':
+            s = s.replace(c, '_')
+        s = s.replace('$', '_dollars')
+        s = s.replace('%', '_percent')
+        if s == '#':
+            s = '_number'
+        keywords = ("graph", "node", "strict", "edge")
+        if re.match('^[0-9]', s) or s in keywords:
+            s = "X" + s
+        return s
+
+    def get_edges(self, graph=None):
+        lines = []
+        # lines.append('\tordering=out;')
+        # sorting everything to make the process deterministic
+
+        edge_lines = []
+        for u, v, edata in graph.edges(data=True):
+            if 'color' in edata:
+                d_node1 = self.d_clean(u)
+                d_node2 = self.d_clean(v)
+
+                lines.append((self.d_clean(d_node1).split("_")[0], self.d_clean(d_node2).split("_")[0], edata['color']))
+        return lines
+
+    def to_dot(self, graph=None):
+        lines = [u'digraph finite_state_machine {', '\tdpi=100;']
+        # lines.append('\tordering=out;')
+        # sorting everything to make the process deterministic
+        self.d_clean("asd")
+        node_lines = []
+        for node, n_data in graph.nodes(data=True):
+            d_node = self.d_clean(node)
+            printname = self.d_clean('_'.join(d_node.split('_')[:-1]))
+            if 'expanded' in n_data and not n_data['expanded']:
+                node_line = u'\t{0} [shape = circle, label = "{1}", \
+                        style="filled"];'.format(
+                                d_node, printname).replace('-', '_')
+            else:
+                node_line = u'\t{0} [shape = circle, label = "{1}"];'.format(
+                        d_node, printname).replace('-', '_')
+                node_lines.append(node_line)
+        lines += sorted(node_lines)
+
+        edge_lines = []
+        for u, v, edata in graph.edges(data=True):
+            if 'color' in edata:
+                d_node1 = self.d_clean(u)
+                d_node2 = self.d_clean(v)
+                edge_lines.append(
+                        u'\t{0} -> {1} [ label = "{2}" ];'.format(
+                            self.d_clean(d_node1), self.d_clean(d_node2),
+                            edata['color']))
+
+        lines += sorted(edge_lines)
+        lines.append('}')
+        return u'\n'.join(lines)
+
+    def asim_jac(self, seq1, seq2):
+        set1, set2 = map(set, (seq1, seq2))
+        intersection = set1 & set2
+        if not intersection:
+            return 0
+        else:
+            sim = float(len(intersection)) / len(set2)
+            return sim
+
+
 vocab, pos_vocab, ner_vocab, rel_vocab = Dictionary(), Dictionary(), Dictionary(), Dictionary()
+
+
 def gen_race_vocab(data):
     race_vocab = Dictionary()
     build_vocab()
@@ -102,6 +186,7 @@ def gen_race_vocab(data):
     writer = open('./data/race_vocab', 'w', encoding='utf-8')
     writer.write('\n'.join(race_vocab.tokens()))
     writer.close()
+
 
 def build_vocab(data=None):
     global vocab, pos_vocab, ner_vocab, rel_vocab
@@ -163,6 +248,7 @@ def build_vocab(data=None):
         rel_vocab.add(w.strip())
     print('Rel vocabulary size: %d' % len(rel_vocab))
 
+
 def gen_submission(data, prediction):
     assert len(data) == len(prediction)
     writer = open('out-%d.txt' % np.random.randint(10**18), 'w', encoding='utf-8')
@@ -170,6 +256,7 @@ def gen_submission(data, prediction):
         p_id, q_id, c_id = ex.id.split('_')[-3:]
         writer.write('%s,%s,%s,%f\n' % (p_id, q_id, c_id, p))
     writer.close()
+
 
 def gen_debug_file(data, prediction):
     writer = open('./data/output.log', 'w', encoding='utf-8')
@@ -189,6 +276,7 @@ def gen_debug_file(data, prediction):
         cur_choices.append(ex.choice)
 
     writer.close()
+
 
 def gen_final_submission(data):
     import glob
@@ -224,6 +312,7 @@ def gen_final_submission(data):
     os.system('zip final_output.zip answer.txt')
     print('Please submit final_output.zip to codalab.')
 
+
 def eval_based_on_outputs(path):
     dev_data = load_data('./data/dev-data-processed.json')
     label = [int(ex.label) for ex in dev_data]
@@ -241,6 +330,7 @@ def eval_based_on_outputs(path):
     assert len(prediction) == len(gold)
     acc = sum([int(p == g) for p, g in zip(prediction, gold)]) / len(gold)
     print('Accuracy on dev_data: %f' % acc)
+
 
 if __name__ == '__main__':
     # build_vocab()
