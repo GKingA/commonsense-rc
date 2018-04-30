@@ -29,7 +29,7 @@ class TriAN(nn.Module):
         self.c_p_emb_match = layers.SeqAttnMatch(self.embedding_dim)
 
         # Input size to RNN: word emb + question emb + pos emb + ner emb + manual features
-        doc_input_size = 2 * self.embedding_dim + args.pos_emb_dim + args.ner_emb_dim + 5 + 2 * args.rel_emb_dim
+        doc_input_size = 2 * self.embedding_dim + args.pos_emb_dim + args.ner_emb_dim + 5 + 2 * args.rel_emb_dim + 2 * args.four_lang_emb_dim
 
         # RNN document encoder
         self.doc_rnn = layers.StackedBRNN(
@@ -43,7 +43,7 @@ class TriAN(nn.Module):
             padding=args.rnn_padding)
 
         # RNN question encoder: word emb + pos emb
-        qst_input_size = self.embedding_dim + args.pos_emb_dim
+        qst_input_size = self.embedding_dim + args.pos_emb_dim + args.four_lang_emb_dim
         self.question_rnn = layers.StackedBRNN(
             input_size=qst_input_size,
             hidden_size=args.hidden_size,
@@ -112,9 +112,9 @@ class TriAN(nn.Module):
         c_p_weighted_emb = nn.functional.dropout(c_p_weighted_emb, p=self.args.dropout_emb, training=self.training)
         # print('p_q_weighted_emb', p_q_weighted_emb.size())
 
-        p_rnn_input = torch.cat([p_emb, p_q_weighted_emb, p_pos_emb, p_ner_emb, f_tensor, p_q_rel_emb, p_c_rel_emb], dim=2)
-        c_rnn_input = torch.cat([c_emb, c_q_weighted_emb, c_p_weighted_emb, q_c_four_lang_emb, p_c_four_lang_emb], dim=2)
-        q_rnn_input = torch.cat([q_emb, q_pos_emb, p_q_four_lang_emb], dim=2)
+        p_rnn_input = torch.cat([p_emb, p_q_weighted_emb, p_pos_emb, p_ner_emb, f_tensor, p_q_rel_emb, p_c_rel_emb, p_c_four_lang_emb, p_q_four_lang_emb], dim=2)
+        c_rnn_input = torch.cat([c_emb, c_q_weighted_emb, c_p_weighted_emb], dim=2)
+        q_rnn_input = torch.cat([q_emb, q_pos_emb, q_c_four_lang_emb], dim=2)
         # print('p_rnn_input', p_rnn_input.size())
 
         p_hiddens = self.doc_rnn(p_rnn_input, p_mask)

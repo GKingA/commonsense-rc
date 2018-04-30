@@ -29,7 +29,7 @@ def get_idf(w):
 
 
 def load_data(path):
-    from .doc import Example
+    from doc import Example
     data = []
     for line in open(path, 'r', encoding='utf-8'):
         if path.find('race') < 0 or np.random.random() < 0.6:
@@ -191,9 +191,9 @@ def gen_race_vocab(data):
 def build_vocab(data=None):
     global vocab, pos_vocab, ner_vocab, rel_vocab
     # build word vocabulary
-    if os.path.exists('./data/vocab'):
+    if os.path.exists('../data/vocab'):
         print('Load vocabulary from ./data/vocab...')
-        for w in open('./data/vocab', encoding='utf-8'):
+        for w in open('../data/vocab', encoding='utf-8'):
             vocab.add(w.strip())
         print('Vocabulary size: %d' % len(vocab))
     else:
@@ -205,13 +205,13 @@ def build_vocab(data=None):
         for key, val in cnt.most_common():
             vocab.add(key)
         print('Vocabulary size: %d' % len(vocab))
-        writer = open('./data/vocab', 'w', encoding='utf-8')
+        writer = open('../data/vocab', 'w', encoding='utf-8')
         writer.write('\n'.join(vocab.tokens()))
         writer.close()
     # build part-of-speech vocabulary
-    if os.path.exists('./data/pos_vocab'):
+    if os.path.exists('../data/pos_vocab'):
         print('Load pos vocabulary from ./data/pos_vocab...')
-        for w in open('./data/pos_vocab', encoding='utf-8'):
+        for w in open('../data/pos_vocab', encoding='utf-8'):
             pos_vocab.add(w.strip())
         print('POS vocabulary size: %d' % len(pos_vocab))
     else:
@@ -222,13 +222,13 @@ def build_vocab(data=None):
         for key, val in cnt.most_common():
             if key: pos_vocab.add(key)
         print('POS vocabulary size: %d' % len(pos_vocab))
-        writer = open('./data/pos_vocab', 'w', encoding='utf-8')
+        writer = open('../data/pos_vocab', 'w', encoding='utf-8')
         writer.write('\n'.join(pos_vocab.tokens()))
         writer.close()
     # build named entity vocabulary
-    if os.path.exists('./data/ner_vocab'):
+    if os.path.exists('../data/ner_vocab'):
         print('Load ner vocabulary from ./data/ner_vocab...')
-        for w in open('./data/ner_vocab', encoding='utf-8'):
+        for w in open('../data/ner_vocab', encoding='utf-8'):
             ner_vocab.add(w.strip())
         print('NER vocabulary size: %d' % len(ner_vocab))
     else:
@@ -238,13 +238,13 @@ def build_vocab(data=None):
         for key, val in cnt.most_common():
             if key: ner_vocab.add(key)
         print('NER vocabulary size: %d' % len(ner_vocab))
-        writer = open('./data/ner_vocab', 'w', encoding='utf-8')
+        writer = open('../data/ner_vocab', 'w', encoding='utf-8')
         writer.write('\n'.join(ner_vocab.tokens()))
         writer.close()
     # Load conceptnet relation vocabulary
-    assert os.path.exists('./data/rel_vocab')
+    assert os.path.exists('../data/rel_vocab')
     print('Load relation vocabulary from ./data/rel_vocab...')
-    for w in open('./data/rel_vocab', encoding='utf-8'):
+    for w in open('../data/rel_vocab', encoding='utf-8'):
         rel_vocab.add(w.strip())
     print('Rel vocabulary size: %d' % len(rel_vocab))
 

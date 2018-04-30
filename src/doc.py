@@ -30,6 +30,9 @@ class Example:
         self.features = torch.from_numpy(self.features).type(torch.FloatTensor)
         self.p_q_relation = torch.LongTensor([rel_vocab[r] for r in input_dict['p_q_relation']])
         self.p_c_relation = torch.LongTensor([rel_vocab[r] for r in input_dict['p_c_relation']])
+        self.q_c_four_lang_relation = torch.LongTensor(input_dict['q_c_four_lang_relation'])
+        self.p_q_four_lang_relation = torch.LongTensor(input_dict['p_q_four_lang_relation'])
+        self.p_c_four_lang_relation = torch.LongTensor(input_dict['p_c_four_lang_relation'])
 
     def __str__(self):
         return 'Passage: %s\n Question: %s\n Answer: %s, Label: %d' % (self.passage, self.question, self.choice, self.label)
@@ -68,6 +71,10 @@ def batchify(batch_data):
     q_pos = _to_indices_and_mask([ex.q_pos_tensor for ex in batch_data], need_mask=False)
     choices = [ex.choice.split() for ex in batch_data]
     c, c_mask = _to_indices_and_mask([ex.c_tensor for ex in batch_data])
+    q_c_four_lang_relation = _to_indices_and_mask([ex.q_c_four_lang_relation for ex in batch_data], need_mask=False)
+    p_c_four_lang_relation = _to_indices_and_mask([ex.p_c_four_lang_relation for ex in batch_data], need_mask=False)
+    p_q_four_lang_relation = _to_indices_and_mask([ex.p_q_four_lang_relation for ex in batch_data], need_mask=False)
     f_tensor = _to_feature_tensor([ex.features for ex in batch_data])
     y = torch.FloatTensor([ex.label for ex in batch_data])
-    return p, p_pos, p_ner, p_mask, q, q_pos, q_mask, c, c_mask, f_tensor, p_q_relation, p_c_relation, y
+    return p, p_pos, p_ner, p_mask, q, q_pos, q_mask, c, c_mask, f_tensor, p_q_relation, p_c_relation,\
+           p_q_four_lang_relation, p_c_four_lang_relation, q_c_four_lang_relation, y

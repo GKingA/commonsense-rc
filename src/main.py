@@ -17,9 +17,9 @@ random.seed(args.seed)
 if __name__ == '__main__':
 
     build_vocab()
-    train_data = load_data('./data/train-data-processed.json')
-    train_data += load_data('./data/trial-data-processed.json')
-    dev_data = load_data('./data/dev-data-processed.json')
+    train_data = load_data('../data/train-data-processed.json')
+    train_data += load_data('../data/trial-data-processed.json')
+    dev_data = load_data('../data/dev-data-processed.json')
     if args.test_mode:
         # use validation data as training data
         train_data += dev_data
@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
         if dev_acc > best_dev_acc:
             best_dev_acc = dev_acc
-            os.system('mv ./data/output.log ./data/best-dev.log')
+            os.system('mv ../data/output.log ../data/best-dev.log')
             model.save(checkpoint_path)
         elif args.test_mode:
             model.save(checkpoint_path)

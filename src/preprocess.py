@@ -8,6 +8,7 @@ import wikiwords
 
 from utils import is_stopword, is_punc, Utils
 from collections import Counter
+from networkx.readwrite import json_graph
 
 
 class Tokens(object):
@@ -208,6 +209,21 @@ def tokenize(text):
     return output
 
 
+def compute_four_lang_relation(graphs, four_lang_utils, dict1, dict2):
+    d1_d2_four_lang_relation = []
+    for d in dict1["words"]:
+        all_word_match = []
+        for q in dict2["words"]:
+            try:
+                d_edges = four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graphs[d]))
+                q_edges = four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graphs[q]))
+                all_word_match.append(int(four_lang_utils.asim_jac(d_edges, q_edges) * 100))
+            except KeyError:
+                all_word_match.append(0)
+        d1_d2_four_lang_relation.append(max(all_word_match))
+    return d1_d2_four_lang_relation
+
+
 def compute_features(d_dict, q_dict, c_dict):
     # in_q, in_c, lemma_in_q, lemma_in_c, tf
     q_words_set = set([w.lower() for w in q_dict['words']])
@@ -223,22 +239,14 @@ def compute_features(d_dict, q_dict, c_dict):
     tf = [0.1 * math.log(wikiwords.N * wikiwords.freq(w.lower()) + 10) for w in d_dict['words']]
     tf = [float('%.2f' % v) for v in tf]
     d_words = Counter(filter(lambda w: not is_stopword(w) and not is_punc(w), d_dict['words']))
-    with open('./data/4lang.json', 'r') as json_graphs:
+    with open('../data/4lang.json', 'r') as json_graphs:
         graphs = json.loads(json_graphs.read())
         four_lang_utils = Utils()
-        from networkx.readwrite import json_graph
-        p_q_four_lang_relation =\
-            [int(four_lang_utils.asim_jac(four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graphs[d])),
-                                          four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graphs[q]))) * 100)
-             for q in q_dict['words'] for d in d_dict['words']]
-        p_c_four_lang_relation = \
-            [int(four_lang_utils.asim_jac(four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graphs[d])),
-                                          four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graphs[c]))) * 100)
-             for c in c_dict['words'] for d in d_dict['words']]
-        q_c_four_lang_relation = \
-            [int(four_lang_utils.asim_jac(four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graphs[q])),
-                                          four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graphs[c]))) * 100)
-             for c in c_dict['words'] for q in q_dict['words']]
+
+        p_q_four_lang_relation = compute_four_lang_relation(graphs, four_lang_utils, d_dict, q_dict)
+        p_c_four_lang_relation = compute_four_lang_relation(graphs, four_lang_utils, d_dict, c_dict)
+        q_c_four_lang_relation = compute_four_lang_relation(graphs, four_lang_utils, q_dict, c_dict)
+
     from conceptnet import concept_net
     p_q_relation = concept_net.p_q_relation(d_dict['words'], q_dict['words'])
     p_c_relation = concept_net.p_q_relation(d_dict['words'], c_dict['words'])
@@ -322,7 +330,7 @@ def preprocess_race_dataset(d):
     def is_option_ok(words):
         s = ' '.join(words).lower()
         return s != 'all of the above' and s != 'none of the above'
-    writer = open('./data/race-processed.json', 'w', encoding='utf-8')
+    writer = open('../data/race-processed.json', 'w', encoding='utf-8')
     ex_cnt = 0
     for obj in _get_race_obj(d):
         d_dict = tokenize(obj['article'].replace('\n', ' ').replace('--', ' '))
@@ -387,7 +395,7 @@ def preprocess_4lang(path, vocab):
             result_vocab = {}
             line = vocab.readline().strip()
             while line is not None and line != "":
-                result_vocab[line] = requests.post("http://hlt.bme.hu/4lang/expand", data=json.dumps({'prem': line, 'hyp': line}), headers=headers).json()['prem']
+                result_vocab[line] = requests.post("http://hlt.bme.hu/4lang/definition", data=json.dumps({'word': line}), headers=headers).json()
                 line = vocab.readline().strip()
         with open(path, 'w') as result_file:
             json_result = json.dumps(result_vocab)
@@ -399,9 +407,9 @@ if __name__ == '__main__':
         preprocess_conceptnet('conceptnet-assertions-5.5.5.csv')
         exit(0)
     init_tokenizer()
-    preprocess_4lang('./data/4lang.json', './data/vocab')
-    preprocess_dataset('./data/trial-data.json')
-    preprocess_dataset('./data/dev-data.json')
-    preprocess_dataset('./data/train-data.json')
-    preprocess_dataset('./data/test-data.json', is_test_set=True)
-    # preprocess_race_dataset('./data/RACE/')
+    preprocess_4lang('../data/4lang.json', '../data/vocab')
+    preprocess_dataset('../data/trial-data.json')
+    preprocess_dataset('../data/dev-data.json')
+    preprocess_dataset('../data/train-data.json')
+    preprocess_dataset('../data/test-data.json', is_test_set=True)
+    # preprocess_race_dataset('../data/RACE/')
