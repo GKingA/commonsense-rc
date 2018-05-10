@@ -95,7 +95,7 @@ class Model:
 
         cur_pred, cur_gold, cur_choices = [], [], []
         if debug:
-            writer = open('./data/output.log', 'w', encoding='utf-8')
+            writer = open('../data/output.log', 'w', encoding='utf-8')
         for i, ex in enumerate(dev_data):
             if i + 1 == len(dev_data):
                 cur_pred.append(prediction[i])

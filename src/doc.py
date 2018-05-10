@@ -3,6 +3,7 @@ import numpy as np
 
 from utils import vocab, pos_vocab, ner_vocab, rel_vocab
 
+
 class Example:
 
     def __init__(self, input_dict):
@@ -33,9 +34,13 @@ class Example:
         self.q_c_four_lang_relation = torch.LongTensor(input_dict['q_c_four_lang_relation'])
         self.p_q_four_lang_relation = torch.LongTensor(input_dict['p_q_four_lang_relation'])
         self.p_c_four_lang_relation = torch.LongTensor(input_dict['p_c_four_lang_relation'])
+        self.q_c_four_lang_sentence_relation = torch.LongTensor(input_dict['q_c_four_lang_sentence_relation'])
+        self.p_q_four_lang_sentence_relation = torch.LongTensor(input_dict['p_q_four_lang_sentence_relation'])
+        self.p_c_four_lang_sentence_relation = torch.LongTensor(input_dict['p_c_four_lang_sentence_relation'])
 
     def __str__(self):
         return 'Passage: %s\n Question: %s\n Answer: %s, Label: %d' % (self.passage, self.question, self.choice, self.label)
+
 
 def _to_indices_and_mask(batch_tensor, need_mask=True):
     mx_len = max([t.size(0) for t in batch_tensor])
@@ -52,6 +57,7 @@ def _to_indices_and_mask(batch_tensor, need_mask=True):
     else:
         return indices
 
+
 def _to_feature_tensor(features):
     mx_len = max([f.size(0) for f in features])
     batch_size = len(features)
@@ -60,6 +66,7 @@ def _to_feature_tensor(features):
     for i, f in enumerate(features):
         f_tensor[i, :len(f), :].copy_(f)
     return f_tensor
+
 
 def batchify(batch_data):
     p, p_mask = _to_indices_and_mask([ex.d_tensor for ex in batch_data])
@@ -74,7 +81,11 @@ def batchify(batch_data):
     q_c_four_lang_relation = _to_indices_and_mask([ex.q_c_four_lang_relation for ex in batch_data], need_mask=False)
     p_c_four_lang_relation = _to_indices_and_mask([ex.p_c_four_lang_relation for ex in batch_data], need_mask=False)
     p_q_four_lang_relation = _to_indices_and_mask([ex.p_q_four_lang_relation for ex in batch_data], need_mask=False)
+    q_c_four_lang_sentence_relation = _to_indices_and_mask([ex.q_c_four_lang_sentence_relation for ex in batch_data], need_mask=False)
+    p_c_four_lang_sentence_relation = _to_indices_and_mask([ex.p_c_four_lang_sentence_relation for ex in batch_data], need_mask=False)
+    p_q_four_lang_sentence_relation = _to_indices_and_mask([ex.p_q_four_lang_sentence_relation for ex in batch_data], need_mask=False)
     f_tensor = _to_feature_tensor([ex.features for ex in batch_data])
     y = torch.FloatTensor([ex.label for ex in batch_data])
     return p, p_pos, p_ner, p_mask, q, q_pos, q_mask, c, c_mask, f_tensor, p_q_relation, p_c_relation,\
-           p_q_four_lang_relation, p_c_four_lang_relation, q_c_four_lang_relation, y
+           p_q_four_lang_relation, p_c_four_lang_relation, q_c_four_lang_relation, \
+           p_q_four_lang_sentence_relation, p_c_four_lang_sentence_relation, q_c_four_lang_sentence_relation, y

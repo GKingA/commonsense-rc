@@ -217,14 +217,24 @@ def compute_four_lang_relation(graphs, four_lang_utils, dict1, dict2):
             try:
                 d_edges = four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graphs[d]))
                 q_edges = four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graphs[q]))
-                all_word_match.append(int(four_lang_utils.asim_jac(d_edges, q_edges) * 100))
+                all_word_match.append(int(four_lang_utils.asim_jac_and_dots(d_edges, q_edges) * 100))
             except KeyError:
                 all_word_match.append(0)
         d1_d2_four_lang_relation.append(max(all_word_match))
     return d1_d2_four_lang_relation
 
 
-def compute_features(d_dict, q_dict, c_dict):
+def compute_four_lang_sentence_relation(graph1, graph2, four_lang_utils):
+    try:
+        d_edges = four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graph1))
+        q_edges = four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graph2))
+        return int(four_lang_utils.asim_jac_and_dots(d_edges, q_edges) * 100)
+    except Exception:
+        print(graph1, graph2)
+        raise
+
+
+def compute_features(d_dict, q_dict, c_dict, d_id, q_id, c_id, graphs, sentence_graphs):
     # in_q, in_c, lemma_in_q, lemma_in_c, tf
     q_words_set = set([w.lower() for w in q_dict['words']])
     in_q = [int(w.lower() in q_words_set and not is_stopword(w) and not is_punc(w)) for w in d_dict['words']]
@@ -239,14 +249,21 @@ def compute_features(d_dict, q_dict, c_dict):
     tf = [0.1 * math.log(wikiwords.N * wikiwords.freq(w.lower()) + 10) for w in d_dict['words']]
     tf = [float('%.2f' % v) for v in tf]
     d_words = Counter(filter(lambda w: not is_stopword(w) and not is_punc(w), d_dict['words']))
-    with open('../data/4lang.json', 'r') as json_graphs:
-        graphs = json.loads(json_graphs.read())
-        four_lang_utils = Utils()
-
-        p_q_four_lang_relation = compute_four_lang_relation(graphs, four_lang_utils, d_dict, q_dict)
-        p_c_four_lang_relation = compute_four_lang_relation(graphs, four_lang_utils, d_dict, c_dict)
-        q_c_four_lang_relation = compute_four_lang_relation(graphs, four_lang_utils, q_dict, c_dict)
-
+    four_lang_utils = Utils()
+    p_q_four_lang_relation = compute_four_lang_relation(graphs, four_lang_utils, d_dict, q_dict)
+    p_c_four_lang_relation = compute_four_lang_relation(graphs, four_lang_utils, d_dict, c_dict)
+    q_c_four_lang_relation = compute_four_lang_relation(graphs, four_lang_utils, q_dict, c_dict)
+    p_q_four_lang_sentence_relation =\
+        compute_four_lang_sentence_relation(sentence_graphs[d_id],
+                                            sentence_graphs[d_id]["questions"][q_id], four_lang_utils)
+    p_c_four_lang_sentence_relation =\
+        compute_four_lang_sentence_relation(sentence_graphs[d_id],
+                                            sentence_graphs[d_id]["questions"][q_id]["choice"][c_id],
+                                            four_lang_utils)
+    q_c_four_lang_sentence_relation =\
+        compute_four_lang_sentence_relation(sentence_graphs[d_id]["questions"][q_id],
+                                            sentence_graphs[d_id]["questions"][q_id]["choice"][c_id],
+                                            four_lang_utils)
     from conceptnet import concept_net
     p_q_relation = concept_net.p_q_relation(d_dict['words'], q_dict['words'])
     p_c_relation = concept_net.p_q_relation(d_dict['words'], c_dict['words'])
@@ -262,7 +279,10 @@ def compute_features(d_dict, q_dict, c_dict):
         'p_c_relation': p_c_relation,
         'p_q_four_lang_relation': p_q_four_lang_relation,
         'p_c_four_lang_relation': p_c_four_lang_relation,
-        'q_c_four_lang_relation': q_c_four_lang_relation
+        'q_c_four_lang_relation': q_c_four_lang_relation,
+        'p_q_four_lang_sentence_relation': p_q_four_lang_sentence_relation,
+        'p_c_four_lang_sentence_relation': p_c_four_lang_sentence_relation,
+        'q_c_four_lang_sentence_relation': q_c_four_lang_sentence_relation
     }
 
 
@@ -279,32 +299,95 @@ def get_example(d_id, q_id, c_id, d_dict, q_dict, c_dict, label):
         }
 
 
-def preprocess_dataset(path, is_test_set=False):
+def preprocess_4lang_sentences(path, request_path):
+    import requests
+    print(path)
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    sentence_graph_results = {}
+    objects = json.load(open(path, 'r', encoding='utf-8'))['data']['instance']
+    for obj in objects:
+        print(obj)
+        try:
+            sentence_graph_results[obj['@id']] = \
+                requests.post(request_path, data=json.dumps({'prem': obj['text'], 'hyp': ''}),
+                              timeout=60, headers=headers).json()['prem']
+        except:
+            import re
+            split = []
+            sentences = re.split('\.', obj['text'])
+            for s in sentences:
+                split += re.split('!', s)
+            graphs = []
+            for index, sent in enumerate(split[:-1]):
+                graphs.append(requests.post(request_path, data=json.dumps({'prem': sent, 'hyp': split[index + 1]}),
+                                            timeout=60, headers=headers).json())
+            sentence_graph_results[obj['@id']] = graphs[0]['prem']
+            for g in graphs:
+                sentence_graph_results[obj['@id']]['nodes'] += g['prem']['nodes'] + g['hyp']['nodes']
+        if 'questions' in obj and obj['questions'] is not None:
+            sentence_graph_results[obj['@id']]["questions"] = {}
+            if isinstance(obj['questions']['question'], list):
+                for question in obj['questions']['question']:
+                    sentence_graph_results[obj['@id']]["questions"][question['@id']] = \
+                        requests.post(request_path, data=json.dumps({'prem': question['@text'], 'hyp': ''}),
+                                      timeout=60, headers=headers).json()['prem']
+                    sentence_graph_results[obj['@id']]["questions"][question['@id']]["choice"] = {}
+                    for choice in question['answer']:
+                        sentence_graph_results[obj['@id']]["questions"][question['@id']]["choice"][choice['@id']] = \
+                            requests.post(request_path, data=json.dumps({'prem': choice['@text'], 'hyp': ''}),
+                                          timeout=60, headers=headers).json()['prem']
+            else:
+                question = obj['questions']['question']
+                sentence_graph_results[obj['@id']]["questions"][question['@id']] = \
+                    requests.post(request_path, data=json.dumps({'prem': question['@text'], 'hyp': ''}),
+                                  timeout=60, headers=headers).json()['prem']
+                sentence_graph_results[obj['@id']]["questions"][question['@id']]["choice"] = {}
+                for choice in question['answer']:
+                    sentence_graph_results[obj['@id']]["questions"][question['@id']]["choice"][choice['@id']] = \
+                        requests.post(request_path, data=json.dumps({'prem': choice['@text'], 'hyp': ''}),
+                                      timeout=60, headers=headers).json()['prem']
+    try:
+        with open(path.replace('.json', '') + '-4lang-' + request_path.split('/')[-1] + '.json', 'w') as \
+                four_lang_sentences:
+            four_lang_sentences.write(json.dumps(sentence_graph_results))
+        return sentence_graph_results
+    except:
+        return sentence_graph_results
+
+
+def preprocess_dataset(path, path_4lang_vocab, request_type, is_test_set=False):
     writer = open(path.replace('.json', '') + '-processed.json', 'w', encoding='utf-8')
     ex_cnt = 0
-    for obj in json.load(open(path, 'r', encoding='utf-8'))['data']['instance']:
-        if not obj['questions']:
-            continue
-        d_dict = tokenize(obj['text'])
-        d_id = path + '_' + obj['@id']
-        try:
-            qs = [q for q in obj['questions']['question']]
-            dummy = qs[0]['@text']
-        except:
-            # some passages have only one question
-            qs = [obj['questions']['question']]
-        for q in qs:
-            q_dict = tokenize(q['@text'])
-            q_id = q['@id']
-            for ans in q['answer']:
-                c_dict = tokenize(ans['@text'])
-                label = int(ans['@correct'].lower() == 'true') if not is_test_set else -1
-                c_id = ans['@id']
-                example = get_example(d_id, q_id, c_id, d_dict, q_dict, c_dict, label)
-                example.update(compute_features(d_dict, q_dict, c_dict))
-                writer.write(json.dumps(example))
-                writer.write('\n')
-                ex_cnt += 1
+    with open(path_4lang_vocab, 'r') as json_graphs:
+        graphs = json.loads(json_graphs.read())
+        if os.path.isfile(path.replace('.json', '') + '-4lang-' + request_type.split('/')[-1] + '.json'):
+            with open(path.replace('.json', '') + '-4lang-' + request_type.split('/')[-1] + '.json', 'r') as four_lang_sentences:
+                sentence_graphs = json.loads(four_lang_sentences.read())
+        else:
+            sentence_graphs = preprocess_4lang_sentences(path, request_type)
+        for obj in json.load(open(path, 'r', encoding='utf-8'))['data']['instance']:
+            if not obj['questions']:
+                continue
+            d_dict = tokenize(obj['text'])
+            d_id = path + '_' + obj['@id']
+            try:
+                qs = [q for q in obj['questions']['question']]
+                dummy = qs[0]['@text']
+            except:
+                # some passages have only one question
+                qs = [obj['questions']['question']]
+            for q in qs:
+                q_dict = tokenize(q['@text'])
+                q_id = q['@id']
+                for ans in q['answer']:
+                    c_dict = tokenize(ans['@text'])
+                    label = int(ans['@correct'].lower() == 'true') if not is_test_set else -1
+                    c_id = ans['@id']
+                    example = get_example(d_id, q_id, c_id, d_dict, q_dict, c_dict, label)
+                    example.update(compute_features(d_dict, q_dict, c_dict, d_id.split('_')[-1], q_id, c_id, graphs, sentence_graphs))
+                    writer.write(json.dumps(example))
+                    writer.write('\n')
+                    ex_cnt += 1
     print('Found %d examples in %s...' % (ex_cnt, path))
     writer.close()
 
@@ -407,9 +490,19 @@ if __name__ == '__main__':
         preprocess_conceptnet('conceptnet-assertions-5.5.5.csv')
         exit(0)
     init_tokenizer()
-    preprocess_4lang('../data/4lang.json', '../data/vocab')
-    preprocess_dataset('../data/trial-data.json')
-    preprocess_dataset('../data/dev-data.json')
-    preprocess_dataset('../data/train-data.json')
-    preprocess_dataset('../data/test-data.json', is_test_set=True)
+    path_4lang = '../data/4lang.json'
+    request_paths = ['http://hlt.bme.hu/4lang/default',
+                     'http://hlt.bme.hu/4lang/expand',
+                     'http://hlt.bme.hu/4lang/abstract']
+    data_paths = ['../data/trial-data.json',
+                  '../data/dev-data.json',
+                  '../data/train-data.json',
+                  '../data/test-data.json']
+    preprocess_4lang(path_4lang, '../data/vocab')
+    for data_path in data_paths:
+        # preprocess_4lang_sentences(data_path, 'http://hlt.bme.hu/4lang/default')
+        if data_path.split('/')[2].startswith('test'):
+            preprocess_dataset(data_path, path_4lang, 'http://hlt.bme.hu/4lang/default', is_test_set=True)
+        else:
+            preprocess_dataset(data_path, path_4lang, 'http://hlt.bme.hu/4lang/default')
     # preprocess_race_dataset('../data/RACE/')
