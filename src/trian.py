@@ -21,9 +21,9 @@ class TriAN(nn.Module):
         self.rel_embedding = nn.Embedding(len(rel_vocab), args.rel_emb_dim, padding_idx=0)
         self.rel_embedding.weight.data.normal_(0, 0.1)
         self.four_lang_embedding = nn.Embedding(101, args.four_lang_emb_dim, padding_idx=0)
-        self.four_lang_sentence_embedding.weight.data.normal_(0, 0.1)
-        self.four_lang_sentence_embedding = nn.Embedding(101, args.four_lang_emb_dim, padding_idx=0)
         self.four_lang_embedding.weight.data.normal_(0, 0.1)
+        self.four_lang_sentence_embedding = nn.Embedding(101, args.four_lang_emb_dim, padding_idx=0)
+        self.four_lang_sentence_embedding.weight.data.normal_(0, 0.1)
         self.RNN_TYPES = {'lstm': nn.LSTM, 'gru': nn.GRU}
 
         self.p_q_emb_match = layers.SeqAttnMatch(self.embedding_dim)
@@ -31,7 +31,7 @@ class TriAN(nn.Module):
         self.c_p_emb_match = layers.SeqAttnMatch(self.embedding_dim)
 
         # Input size to RNN: word emb + question emb + pos emb + ner emb + manual features
-        doc_input_size = 2 * self.embedding_dim + args.pos_emb_dim + args.ner_emb_dim + 5 + 2 * args.rel_emb_dim + 3 * args.four_lang_emb_dim
+        doc_input_size = 2 * self.embedding_dim + args.pos_emb_dim + args.ner_emb_dim + 5 + 2 * args.rel_emb_dim + 4 * args.four_lang_emb_dim
 
         # RNN document encoder
         self.doc_rnn = layers.StackedBRNN(
@@ -92,16 +92,10 @@ class TriAN(nn.Module):
             self.four_lang_embedding(p_q_four_lang_relation),\
             self.four_lang_embedding(p_c_four_lang_relation),\
             self.four_lang_embedding(q_c_four_lang_relation)
-        padded_p_q_four_lang_sentence_relation =\
-            torch.LongTensor((len(p_q_four_lang_sentence_relation), len(p_q_four_lang_relation))).fill_(0)
-        padded_p_c_four_lang_sentence_relation = \
-            torch.LongTensor((len(p_c_four_lang_sentence_relation), len(p_c_four_lang_relation))).fill_(0)
-        padded_q_c_four_lang_sentence_relation = \
-            torch.LongTensor((len(q_c_four_lang_sentence_relation), len(q_c_four_lang_relation))).fill_(0)
         p_q_four_lang_sentence_emb, p_c_four_lang_sentence_emb, q_c_four_lang_sentence_emb =\
-            self.four_lang_sentence_embedding(padded_p_q_four_lang_sentence_relation), \
-            self.four_lang_sentence_embedding(padded_p_c_four_lang_sentence_relation), \
-            self.four_lang_sentence_embedding(padded_q_c_four_lang_sentence_relation)
+            self.four_lang_sentence_embedding(p_q_four_lang_sentence_relation), \
+            self.four_lang_sentence_embedding(p_c_four_lang_sentence_relation), \
+            self.four_lang_sentence_embedding(q_c_four_lang_sentence_relation)
 
         # Dropout on embeddings
         if self.args.dropout_emb > 0:

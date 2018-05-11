@@ -34,9 +34,9 @@ class Example:
         self.q_c_four_lang_relation = torch.LongTensor(input_dict['q_c_four_lang_relation'])
         self.p_q_four_lang_relation = torch.LongTensor(input_dict['p_q_four_lang_relation'])
         self.p_c_four_lang_relation = torch.LongTensor(input_dict['p_c_four_lang_relation'])
-        self.q_c_four_lang_sentence_relation = torch.LongTensor(input_dict['q_c_four_lang_sentence_relation'])
-        self.p_q_four_lang_sentence_relation = torch.LongTensor(input_dict['p_q_four_lang_sentence_relation'])
-        self.p_c_four_lang_sentence_relation = torch.LongTensor(input_dict['p_c_four_lang_sentence_relation'])
+        self.q_c_four_lang_sentence_relation = torch.LongTensor([input_dict['q_c_four_lang_sentence_relation']])
+        self.p_q_four_lang_sentence_relation = torch.LongTensor([input_dict['p_q_four_lang_sentence_relation']])
+        self.p_c_four_lang_sentence_relation = torch.LongTensor([input_dict['p_c_four_lang_sentence_relation']])
 
     def __str__(self):
         return 'Passage: %s\n Question: %s\n Answer: %s, Label: %d' % (self.passage, self.question, self.choice, self.label)
@@ -56,6 +56,15 @@ def _to_indices_and_mask(batch_tensor, need_mask=True):
         return indices, mask
     else:
         return indices
+
+
+def _to_indices_4lang(batch_tensor, other_tensor):
+    mx_len = max([t.size(0) for t in other_tensor])
+    batch_size = len(batch_tensor)
+    indices = torch.LongTensor(batch_size, mx_len).fill_(0)
+    for i, t in enumerate(batch_tensor):
+        indices[i, :len(t)].copy_(t)
+    return indices
 
 
 def _to_feature_tensor(features):
@@ -81,9 +90,12 @@ def batchify(batch_data):
     q_c_four_lang_relation = _to_indices_and_mask([ex.q_c_four_lang_relation for ex in batch_data], need_mask=False)
     p_c_four_lang_relation = _to_indices_and_mask([ex.p_c_four_lang_relation for ex in batch_data], need_mask=False)
     p_q_four_lang_relation = _to_indices_and_mask([ex.p_q_four_lang_relation for ex in batch_data], need_mask=False)
-    q_c_four_lang_sentence_relation = _to_indices_and_mask([ex.q_c_four_lang_sentence_relation for ex in batch_data], need_mask=False)
-    p_c_four_lang_sentence_relation = _to_indices_and_mask([ex.p_c_four_lang_sentence_relation for ex in batch_data], need_mask=False)
-    p_q_four_lang_sentence_relation = _to_indices_and_mask([ex.p_q_four_lang_sentence_relation for ex in batch_data], need_mask=False)
+    q_c_four_lang_sentence_relation = _to_indices_4lang([ex.q_c_four_lang_sentence_relation for ex in batch_data],
+                                                        [ex.q_c_four_lang_relation for ex in batch_data])
+    p_c_four_lang_sentence_relation = _to_indices_4lang([ex.p_c_four_lang_sentence_relation for ex in batch_data],
+                                                        [ex.p_c_four_lang_relation for ex in batch_data])
+    p_q_four_lang_sentence_relation = _to_indices_4lang([ex.p_q_four_lang_sentence_relation for ex in batch_data],
+                                                        [ex.p_q_four_lang_relation for ex in batch_data])
     f_tensor = _to_feature_tensor([ex.features for ex in batch_data])
     y = torch.FloatTensor([ex.label for ex in batch_data])
     return p, p_pos, p_ner, p_mask, q, q_pos, q_mask, c, c_mask, f_tensor, p_q_relation, p_c_relation,\
