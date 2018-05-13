@@ -1,0 +1,1913 @@
+Vocabulary size: 33382
+Load pos vocabulary from ./data/pos_vocab...
+POS vocabulary size: 51
+Load ner vocabulary from ./data/ner_vocab...
+NER vocabulary size: 20
+Load relation vocabulary from ./data/rel_vocab...
+Rel vocabulary size: 39
+Load 19462 examples from ./data/train-data-processed.json...
+Load 1020 examples from ./data/trial-data-processed.json...
+Load 2822 examples from ./data/dev-data-processed.json...
+Use cuda: True
+WARNING:root:WARN: Duplicate embedding found for ;
+TriAN(
+  (embedding): Embedding(33382, 300, padding_idx=0)
+  (pos_embedding): Embedding(51, 12, padding_idx=0)
+  (ner_embedding): Embedding(20, 8, padding_idx=0)
+  (rel_embedding): Embedding(39, 10, padding_idx=0)
+  (p_q_emb_match): SeqAttnMatch(
+    (linear): Linear(in_features=300, out_features=300, bias=True)
+  )
+  (c_q_emb_match): SeqAttnMatch(
+    (linear): Linear(in_features=300, out_features=300, bias=True)
+  )
+  (c_p_emb_match): SeqAttnMatch(
+    (linear): Linear(in_features=300, out_features=300, bias=True)
+  )
+  (doc_rnn): StackedBRNN(
+    (rnns): ModuleList(
+      (0): LSTM(645, 96, bidirectional=True)
+    )
+  )
+  (question_rnn): StackedBRNN(
+    (rnns): ModuleList(
+      (0): LSTM(312, 96, bidirectional=True)
+    )
+  )
+  (choice_rnn): StackedBRNN(
+    (rnns): ModuleList(
+      (0): LSTM(900, 96, bidirectional=True)
+    )
+  )
+  (c_self_attn): LinearSeqAttn(
+    (linear): Linear(in_features=192, out_features=1, bias=True)
+  )
+  (q_self_attn): LinearSeqAttn(
+    (linear): Linear(in_features=192, out_features=1, bias=True)
+  )
+  (p_q_attn): BilinearSeqAttn(
+    (linear): Linear(in_features=192, out_features=192, bias=True)
+  )
+  (p_c_bilinear): Linear(in_features=192, out_features=192, bias=True)
+  (q_c_bilinear): Linear(in_features=192, out_features=192, bias=True)
+)
+Number of parameters:  2038584
+Trained model will be saved to ./checkpoint/1234-2018-04-06T09:55:12.992001.mdl
+Epoch 0...
+/userhome/student/kinga/commonsense-rc/src/layers.py:197: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  alpha_flat = F.softmax(scores.view(-1, y.size(1)))
+/userhome/student/kinga/commonsense-rc/src/layers.py:263: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  alpha = F.softmax(scores)
+/userhome/student/kinga/commonsense-rc/src/layers.py:236: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  alpha = F.softmax(xWy)
+Dev accuracy: 0.468462
+Iter: 20/641, Loss: 0.671875
+Iter: 40/641, Loss: 0.675893
+Iter: 60/641, Loss: 0.636884
+Iter: 80/641, Loss: 0.701939
+Iter: 100/641, Loss: 0.635755
+Iter: 120/641, Loss: 0.712536
+Iter: 140/641, Loss: 0.642831
+Iter: 160/641, Loss: 0.693815
+Iter: 180/641, Loss: 0.705566
+Iter: 200/641, Loss: 0.706523
+Iter: 220/641, Loss: 0.663309
+Iter: 240/641, Loss: 0.731565
+Iter: 260/641, Loss: 0.712612
+Iter: 280/641, Loss: 0.664819
+Iter: 300/641, Loss: 0.681145
+Iter: 320/641, Loss: 0.672393
+Iter: 340/641, Loss: 0.647805
+Iter: 360/641, Loss: 0.683275
+Iter: 380/641, Loss: 0.632536
+Iter: 400/641, Loss: 0.612169
+Iter: 420/641, Loss: 0.712172
+Iter: 440/641, Loss: 0.610343
+Iter: 460/641, Loss: 0.599293
+Iter: 480/641, Loss: 0.652512
+Iter: 500/641, Loss: 0.741523
+Iter: 520/641, Loss: 0.673935
+Iter: 540/641, Loss: 0.606937
+Iter: 560/641, Loss: 0.712041
+Iter: 580/641, Loss: 0.620302
+Iter: 600/641, Loss: 0.622068
+Iter: 620/641, Loss: 0.571054
+Iter: 640/641, Loss: 0.701459
+LR: 0.002
+Train accuracy: 0.664500
+Dev accuracy: 0.737775
+Epoch 0 use 69 seconds.
+Epoch 1...
+Iter: 20/641, Loss: 0.698972
+Iter: 40/641, Loss: 0.609724
+Iter: 60/641, Loss: 0.660021
+Iter: 80/641, Loss: 0.643729
+Iter: 100/641, Loss: 0.631859
+Iter: 120/641, Loss: 0.573654
+Iter: 140/641, Loss: 0.746123
+Iter: 160/641, Loss: 0.605492
+Iter: 180/641, Loss: 0.462268
+Iter: 200/641, Loss: 0.692725
+Iter: 220/641, Loss: 0.634921
+Iter: 240/641, Loss: 0.619415
+Iter: 260/641, Loss: 0.653468
+Iter: 280/641, Loss: 0.507625
+Iter: 300/641, Loss: 0.673871
+Iter: 320/641, Loss: 0.712445
+Iter: 340/641, Loss: 0.619409
+Iter: 360/641, Loss: 0.726688
+Iter: 380/641, Loss: 0.631951
+Iter: 400/641, Loss: 0.586511
+Iter: 420/641, Loss: 0.655861
+Iter: 440/641, Loss: 0.678210
+Iter: 460/641, Loss: 0.706087
+Iter: 480/641, Loss: 0.563668
+Iter: 500/641, Loss: 0.580871
+Iter: 520/641, Loss: 0.578595
+Iter: 540/641, Loss: 0.488082
+Iter: 560/641, Loss: 0.538067
+Iter: 580/641, Loss: 0.666146
+Iter: 600/641, Loss: 0.518331
+Iter: 620/641, Loss: 0.506154
+Iter: 640/641, Loss: 0.660144
+LR: 0.002
+Train accuracy: 0.712500
+Dev accuracy: 0.764706
+Epoch 1 use 66 seconds.
+Epoch 2...
+Iter: 20/641, Loss: 0.759030
+Iter: 40/641, Loss: 0.507439
+Iter: 60/641, Loss: 0.581725
+Iter: 80/641, Loss: 0.509798
+Iter: 100/641, Loss: 0.464108
+Iter: 120/641, Loss: 0.495738
+Iter: 140/641, Loss: 0.593841
+Iter: 160/641, Loss: 0.618765
+Iter: 180/641, Loss: 0.689558
+Iter: 200/641, Loss: 0.666711
+Iter: 220/641, Loss: 0.504887
+Iter: 240/641, Loss: 0.577005
+Iter: 260/641, Loss: 0.649145
+Iter: 280/641, Loss: 0.458238
+Iter: 300/641, Loss: 0.690986
+Iter: 320/641, Loss: 0.457246
+Iter: 340/641, Loss: 0.382802
+Iter: 360/641, Loss: 0.574739
+Iter: 380/641, Loss: 0.540756
+Iter: 400/641, Loss: 0.407323
+Iter: 420/641, Loss: 0.592284
+Iter: 440/641, Loss: 0.439001
+Iter: 460/641, Loss: 0.488604
+Iter: 480/641, Loss: 0.632460
+Iter: 500/641, Loss: 0.753475
+Iter: 520/641, Loss: 0.452119
+Iter: 540/641, Loss: 0.625386
+Iter: 560/641, Loss: 0.600908
+Iter: 580/641, Loss: 0.578217
+Iter: 600/641, Loss: 0.589798
+Iter: 620/641, Loss: 0.482868
+Iter: 640/641, Loss: 0.680627
+LR: 0.002
+Train accuracy: 0.744500
+Dev accuracy: 0.792346
+Epoch 2 use 63 seconds.
+Epoch 3...
+Iter: 20/641, Loss: 0.447346
+Iter: 40/641, Loss: 0.496951
+Iter: 60/641, Loss: 0.598016
+Iter: 80/641, Loss: 0.585153
+Iter: 100/641, Loss: 0.564936
+Iter: 120/641, Loss: 0.620634
+Iter: 140/641, Loss: 0.510635
+Iter: 160/641, Loss: 0.545059
+Iter: 180/641, Loss: 0.506396
+Iter: 200/641, Loss: 0.383811
+Iter: 220/641, Loss: 0.477585
+Iter: 240/641, Loss: 0.383568
+Iter: 260/641, Loss: 0.650698
+Iter: 280/641, Loss: 0.509336
+Iter: 300/641, Loss: 0.677901
+Iter: 320/641, Loss: 0.562845
+Iter: 340/641, Loss: 0.522944
+Iter: 360/641, Loss: 0.580811
+Iter: 380/641, Loss: 0.414858
+Iter: 400/641, Loss: 0.442541
+Iter: 420/641, Loss: 0.581443
+Iter: 440/641, Loss: 0.495264
+Iter: 460/641, Loss: 0.488315
+Iter: 480/641, Loss: 0.471948
+Iter: 500/641, Loss: 0.615682
+Iter: 520/641, Loss: 0.458885
+Iter: 540/641, Loss: 0.475456
+Iter: 560/641, Loss: 0.549622
+Iter: 580/641, Loss: 0.578718
+Iter: 600/641, Loss: 0.564843
+Iter: 620/641, Loss: 0.495580
+Iter: 640/641, Loss: 0.365849
+LR: 0.002
+Train accuracy: 0.758000
+Dev accuracy: 0.791637
+Epoch 3 use 64 seconds.
+Epoch 4...
+Iter: 20/641, Loss: 0.481961
+Iter: 40/641, Loss: 0.487477
+Iter: 60/641, Loss: 0.569516
+Iter: 80/641, Loss: 0.386426
+Iter: 100/641, Loss: 0.526074
+Iter: 120/641, Loss: 0.524455
+Iter: 140/641, Loss: 0.397701
+Iter: 160/641, Loss: 0.315891
+Iter: 180/641, Loss: 0.472878
+Iter: 200/641, Loss: 0.518169
+Iter: 220/641, Loss: 0.445336
+Iter: 240/641, Loss: 0.402433
+Iter: 260/641, Loss: 0.412446
+Iter: 280/641, Loss: 0.372501
+Iter: 300/641, Loss: 0.460027
+Iter: 320/641, Loss: 0.488576
+Iter: 340/641, Loss: 0.532155
+Iter: 360/641, Loss: 0.467522
+Iter: 380/641, Loss: 0.507714
+Iter: 400/641, Loss: 0.625521
+Iter: 420/641, Loss: 0.521852
+Iter: 440/641, Loss: 0.452904
+Iter: 460/641, Loss: 0.492303
+Iter: 480/641, Loss: 0.562580
+Iter: 500/641, Loss: 0.539972
+Iter: 520/641, Loss: 0.415757
+Iter: 540/641, Loss: 0.487792
+Iter: 560/641, Loss: 0.484754
+Iter: 580/641, Loss: 0.554201
+Iter: 600/641, Loss: 0.588479
+Iter: 620/641, Loss: 0.599789
+Iter: 640/641, Loss: 0.477930
+LR: 0.002
+Train accuracy: 0.791000
+Dev accuracy: 0.801559
+Epoch 4 use 63 seconds.
+Epoch 5...
+Iter: 20/641, Loss: 0.465725
+Iter: 40/641, Loss: 0.521236
+Iter: 60/641, Loss: 0.337507
+Iter: 80/641, Loss: 0.424117
+Iter: 100/641, Loss: 0.286990
+Iter: 120/641, Loss: 0.312050
+Iter: 140/641, Loss: 0.461390
+Iter: 160/641, Loss: 0.610979
+Iter: 180/641, Loss: 0.453528
+Iter: 200/641, Loss: 0.483907
+Iter: 220/641, Loss: 0.538324
+Iter: 240/641, Loss: 0.543046
+Iter: 260/641, Loss: 0.461330
+Iter: 280/641, Loss: 0.383741
+Iter: 300/641, Loss: 0.364115
+Iter: 320/641, Loss: 0.418667
+Iter: 340/641, Loss: 0.544042
+Iter: 360/641, Loss: 0.493108
+Iter: 380/641, Loss: 0.477527
+Iter: 400/641, Loss: 0.492555
+Iter: 420/641, Loss: 0.512104
+Iter: 440/641, Loss: 0.601145
+Iter: 460/641, Loss: 0.354378
+Iter: 480/641, Loss: 0.355467
+Iter: 500/641, Loss: 0.543285
+Iter: 520/641, Loss: 0.518187
+Iter: 540/641, Loss: 0.459523
+Iter: 560/641, Loss: 0.388739
+Iter: 580/641, Loss: 0.529244
+Iter: 600/641, Loss: 0.435588
+Iter: 620/641, Loss: 0.499736
+Iter: 640/641, Loss: 0.604706
+LR: 0.002
+Train accuracy: 0.831000
+Dev accuracy: 0.816442
+Epoch 5 use 64 seconds.
+Epoch 6...
+Iter: 20/641, Loss: 0.356202
+Iter: 40/641, Loss: 0.422762
+Iter: 60/641, Loss: 0.357964
+Iter: 80/641, Loss: 0.405466
+Iter: 100/641, Loss: 0.382098
+Iter: 120/641, Loss: 0.287204
+Iter: 140/641, Loss: 0.337511
+Iter: 160/641, Loss: 0.544219
+Iter: 180/641, Loss: 0.464421
+Iter: 200/641, Loss: 0.383412
+Iter: 220/641, Loss: 0.468990
+Iter: 240/641, Loss: 0.472300
+Iter: 260/641, Loss: 0.430724
+Iter: 280/641, Loss: 0.507914
+Iter: 300/641, Loss: 0.493431
+Iter: 320/641, Loss: 0.476280
+Iter: 340/641, Loss: 0.374549
+Iter: 360/641, Loss: 0.412148
+Iter: 380/641, Loss: 0.557833
+Iter: 400/641, Loss: 0.589599
+Iter: 420/641, Loss: 0.445762
+Iter: 440/641, Loss: 0.458938
+Iter: 460/641, Loss: 0.376575
+Iter: 480/641, Loss: 0.423254
+Iter: 500/641, Loss: 0.524108
+Iter: 520/641, Loss: 0.414180
+Iter: 540/641, Loss: 0.677553
+Iter: 560/641, Loss: 0.445267
+Iter: 580/641, Loss: 0.451890
+Iter: 600/641, Loss: 0.456003
+Iter: 620/641, Loss: 0.582839
+Iter: 640/641, Loss: 0.555171
+LR: 0.002
+Train accuracy: 0.847500
+Dev accuracy: 0.814316
+Epoch 6 use 67 seconds.
+Epoch 7...
+Iter: 20/641, Loss: 0.361615
+Iter: 40/641, Loss: 0.397356
+Iter: 60/641, Loss: 0.355725
+Iter: 80/641, Loss: 0.362157
+Iter: 100/641, Loss: 0.641117
+Iter: 120/641, Loss: 0.408191
+Iter: 140/641, Loss: 0.380454
+Iter: 160/641, Loss: 0.404433
+Iter: 180/641, Loss: 0.508780
+Iter: 200/641, Loss: 0.277519
+Iter: 220/641, Loss: 0.428339
+Iter: 240/641, Loss: 0.459140
+Iter: 260/641, Loss: 0.395788
+Iter: 280/641, Loss: 0.483411
+Iter: 300/641, Loss: 0.472871
+Iter: 320/641, Loss: 0.379465
+Iter: 340/641, Loss: 0.456848
+Iter: 360/641, Loss: 0.249313
+Iter: 380/641, Loss: 0.308447
+Iter: 400/641, Loss: 0.365740
+Iter: 420/641, Loss: 0.430907
+Iter: 440/641, Loss: 0.207468
+Iter: 460/641, Loss: 0.614150
+Iter: 480/641, Loss: 0.363229
+Iter: 500/641, Loss: 0.623507
+Iter: 520/641, Loss: 0.302314
+Iter: 540/641, Loss: 0.312624
+Iter: 560/641, Loss: 0.544184
+Iter: 580/641, Loss: 0.368628
+Iter: 600/641, Loss: 0.456035
+Iter: 620/641, Loss: 0.564142
+Iter: 640/641, Loss: 0.235235
+LR: 0.002
+Train accuracy: 0.875000
+Dev accuracy: 0.809355
+Epoch 7 use 66 seconds.
+Epoch 8...
+Iter: 20/641, Loss: 0.282439
+Iter: 40/641, Loss: 0.337870
+Iter: 60/641, Loss: 0.296811
+Iter: 80/641, Loss: 0.294809
+Iter: 100/641, Loss: 0.437759
+Iter: 120/641, Loss: 0.334510
+Iter: 140/641, Loss: 0.350336
+Iter: 160/641, Loss: 0.278619
+Iter: 180/641, Loss: 0.282592
+Iter: 200/641, Loss: 0.462305
+Iter: 220/641, Loss: 0.318522
+Iter: 240/641, Loss: 0.255428
+Iter: 260/641, Loss: 0.542936
+Iter: 280/641, Loss: 0.299399
+Iter: 300/641, Loss: 0.389558
+Iter: 320/641, Loss: 0.422318
+Iter: 340/641, Loss: 0.484803
+Iter: 360/641, Loss: 0.466717
+Iter: 380/641, Loss: 0.352820
+Iter: 400/641, Loss: 0.344688
+Iter: 420/641, Loss: 0.455456
+Iter: 440/641, Loss: 0.360896
+Iter: 460/641, Loss: 0.311032
+Iter: 480/641, Loss: 0.510122
+Iter: 500/641, Loss: 0.395633
+Iter: 520/641, Loss: 0.431415
+Iter: 540/641, Loss: 0.367142
+Iter: 560/641, Loss: 0.530245
+Iter: 580/641, Loss: 0.322718
+Iter: 600/641, Loss: 0.543344
+Iter: 620/641, Loss: 0.227480
+Iter: 640/641, Loss: 0.275802
+LR: 0.002
+Train accuracy: 0.888500
+Dev accuracy: 0.812899
+Epoch 8 use 66 seconds.
+Epoch 9...
+Iter: 20/641, Loss: 0.230129
+Iter: 40/641, Loss: 0.346916
+Iter: 60/641, Loss: 0.438580
+Iter: 80/641, Loss: 0.386603
+Iter: 100/641, Loss: 0.337312
+Iter: 120/641, Loss: 0.297895
+Iter: 140/641, Loss: 0.539004
+Iter: 160/641, Loss: 0.199015
+Iter: 180/641, Loss: 0.502177
+Iter: 200/641, Loss: 0.171686
+Iter: 220/641, Loss: 0.504812
+Iter: 240/641, Loss: 0.324812
+Iter: 260/641, Loss: 0.352593
+Iter: 280/641, Loss: 0.359182
+Iter: 300/641, Loss: 0.542594
+Iter: 320/641, Loss: 0.329163
+Iter: 340/641, Loss: 0.400887
+Iter: 360/641, Loss: 0.401549
+Iter: 380/641, Loss: 0.372545
+Iter: 400/641, Loss: 0.265531
+Iter: 420/641, Loss: 0.300739
+Iter: 440/641, Loss: 0.262990
+Iter: 460/641, Loss: 0.386230
+Iter: 480/641, Loss: 0.434875
+Iter: 500/641, Loss: 0.246069
+Iter: 520/641, Loss: 0.374150
+Iter: 540/641, Loss: 0.357657
+Iter: 560/641, Loss: 0.348159
+Iter: 580/641, Loss: 0.326870
+Iter: 600/641, Loss: 0.338060
+Iter: 620/641, Loss: 0.422797
+Iter: 640/641, Loss: 0.314669
+LR: 0.002
+Train accuracy: 0.899500
+Dev accuracy: 0.803685
+Epoch 9 use 64 seconds.
+Epoch 10...
+Iter: 20/641, Loss: 0.275263
+Iter: 40/641, Loss: 0.357166
+Iter: 60/641, Loss: 0.339651
+Iter: 80/641, Loss: 0.306254
+Iter: 100/641, Loss: 0.385664
+Iter: 120/641, Loss: 0.295473
+Iter: 140/641, Loss: 0.205798
+Iter: 160/641, Loss: 0.423546
+Iter: 180/641, Loss: 0.436171
+Iter: 200/641, Loss: 0.242842
+Iter: 220/641, Loss: 0.505448
+Iter: 240/641, Loss: 0.283882
+Iter: 260/641, Loss: 0.249550
+Iter: 280/641, Loss: 0.312227
+Iter: 300/641, Loss: 0.497883
+Iter: 320/641, Loss: 0.532728
+Iter: 340/641, Loss: 0.444859
+Iter: 360/641, Loss: 0.224780
+Iter: 380/641, Loss: 0.337391
+Iter: 400/641, Loss: 0.334225
+Iter: 420/641, Loss: 0.229128
+Iter: 440/641, Loss: 0.316869
+Iter: 460/641, Loss: 0.470540
+Iter: 480/641, Loss: 0.307450
+Iter: 500/641, Loss: 0.321095
+Iter: 520/641, Loss: 0.263304
+Iter: 540/641, Loss: 0.386607
+Iter: 560/641, Loss: 0.218099
+Iter: 580/641, Loss: 0.393964
+Iter: 600/641, Loss: 0.407997
+Iter: 620/641, Loss: 0.363380
+Iter: 640/641, Loss: 0.190729
+LR: 0.001
+Train accuracy: 0.911500
+Dev accuracy: 0.815025
+Epoch 10 use 65 seconds.
+Epoch 11...
+Iter: 20/641, Loss: 0.208723
+Iter: 40/641, Loss: 0.237518
+Iter: 60/641, Loss: 0.226042
+Iter: 80/641, Loss: 0.152350
+Iter: 100/641, Loss: 0.276717
+Iter: 120/641, Loss: 0.243981
+Iter: 140/641, Loss: 0.298006
+Iter: 160/641, Loss: 0.350999
+Iter: 180/641, Loss: 0.323346
+Iter: 200/641, Loss: 0.239304
+Iter: 220/641, Loss: 0.198497
+Iter: 240/641, Loss: 0.339901
+Iter: 260/641, Loss: 0.384018
+Iter: 280/641, Loss: 0.277463
+Iter: 300/641, Loss: 0.350743
+Iter: 320/641, Loss: 0.209788
+Iter: 340/641, Loss: 0.206743
+Iter: 360/641, Loss: 0.381406
+Iter: 380/641, Loss: 0.255054
+Iter: 400/641, Loss: 0.175519
+Iter: 420/641, Loss: 0.298418
+Iter: 440/641, Loss: 0.260232
+Iter: 460/641, Loss: 0.237607
+Iter: 480/641, Loss: 0.249412
+Iter: 500/641, Loss: 0.096533
+Iter: 520/641, Loss: 0.227795
+Iter: 540/641, Loss: 0.158330
+Iter: 560/641, Loss: 0.423550
+Iter: 580/641, Loss: 0.233633
+Iter: 600/641, Loss: 0.438231
+Iter: 620/641, Loss: 0.345742
+Iter: 640/641, Loss: 0.158608
+LR: 0.001
+Train accuracy: 0.936500
+Dev accuracy: 0.819986
+Epoch 11 use 65 seconds.
+Epoch 12...
+Iter: 20/641, Loss: 0.132697
+Iter: 40/641, Loss: 0.239050
+Iter: 60/641, Loss: 0.216927
+Iter: 80/641, Loss: 0.171405
+Iter: 100/641, Loss: 0.145557
+Iter: 120/641, Loss: 0.253749
+Iter: 140/641, Loss: 0.155629
+Iter: 160/641, Loss: 0.285343
+Iter: 180/641, Loss: 0.256650
+Iter: 200/641, Loss: 0.313640
+Iter: 220/641, Loss: 0.324436
+Iter: 240/641, Loss: 0.305009
+Iter: 260/641, Loss: 0.152806
+Iter: 280/641, Loss: 0.475480
+Iter: 300/641, Loss: 0.484526
+Iter: 320/641, Loss: 0.243745
+Iter: 340/641, Loss: 0.247875
+Iter: 360/641, Loss: 0.151549
+Iter: 380/641, Loss: 0.349533
+Iter: 400/641, Loss: 0.159809
+Iter: 420/641, Loss: 0.309712
+Iter: 440/641, Loss: 0.340121
+Iter: 460/641, Loss: 0.190127
+Iter: 480/641, Loss: 0.335336
+Iter: 500/641, Loss: 0.122888
+Iter: 520/641, Loss: 0.132923
+Iter: 540/641, Loss: 0.313632
+Iter: 560/641, Loss: 0.297361
+Iter: 580/641, Loss: 0.197352
+Iter: 600/641, Loss: 0.223724
+Iter: 620/641, Loss: 0.302740
+Iter: 640/641, Loss: 0.348317
+LR: 0.001
+Train accuracy: 0.943000
+Dev accuracy: 0.815734
+Epoch 12 use 72 seconds.
+Epoch 13...
+Iter: 20/641, Loss: 0.206489
+Iter: 40/641, Loss: 0.244436
+Iter: 60/641, Loss: 0.267190
+Iter: 80/641, Loss: 0.161474
+Iter: 100/641, Loss: 0.246743
+Iter: 120/641, Loss: 0.169561
+Iter: 140/641, Loss: 0.366953
+Iter: 160/641, Loss: 0.156474
+Iter: 180/641, Loss: 0.241915
+Iter: 200/641, Loss: 0.305691
+Iter: 220/641, Loss: 0.190140
+Iter: 240/641, Loss: 0.236363
+Iter: 260/641, Loss: 0.209853
+Iter: 280/641, Loss: 0.109992
+Iter: 300/641, Loss: 0.374064
+Iter: 320/641, Loss: 0.163999
+Iter: 340/641, Loss: 0.387541
+Iter: 360/641, Loss: 0.350090
+Iter: 380/641, Loss: 0.185122
+Iter: 400/641, Loss: 0.313602
+Iter: 420/641, Loss: 0.118778
+Iter: 440/641, Loss: 0.295488
+Iter: 460/641, Loss: 0.368296
+Iter: 480/641, Loss: 0.292812
+Iter: 500/641, Loss: 0.299828
+Iter: 520/641, Loss: 0.251936
+Iter: 540/641, Loss: 0.259191
+Iter: 560/641, Loss: 0.383331
+Iter: 580/641, Loss: 0.250712
+Iter: 600/641, Loss: 0.232538
+Iter: 620/641, Loss: 0.144890
+Iter: 640/641, Loss: 0.222955
+LR: 0.001
+Train accuracy: 0.945000
+Dev accuracy: 0.809355
+Epoch 13 use 74 seconds.
+Epoch 14...
+Iter: 20/641, Loss: 0.318225
+Iter: 40/641, Loss: 0.205512
+Iter: 60/641, Loss: 0.158451
+Iter: 80/641, Loss: 0.235166
+Iter: 100/641, Loss: 0.204218
+Iter: 120/641, Loss: 0.220547
+Iter: 140/641, Loss: 0.218990
+Iter: 160/641, Loss: 0.125285
+Iter: 180/641, Loss: 0.236507
+Iter: 200/641, Loss: 0.199337
+Iter: 220/641, Loss: 0.195915
+Iter: 240/641, Loss: 0.120912
+Iter: 260/641, Loss: 0.145721
+Iter: 280/641, Loss: 0.457369
+Iter: 300/641, Loss: 0.223878
+Iter: 320/641, Loss: 0.173443
+Iter: 340/641, Loss: 0.579556
+Iter: 360/641, Loss: 0.542688
+Iter: 380/641, Loss: 0.167915
+Iter: 400/641, Loss: 0.311460
+Iter: 420/641, Loss: 0.395981
+Iter: 440/641, Loss: 0.280362
+Iter: 460/641, Loss: 0.164625
+Iter: 480/641, Loss: 0.185673
+Iter: 500/641, Loss: 0.213225
+Iter: 520/641, Loss: 0.284507
+Iter: 540/641, Loss: 0.106873
+Iter: 560/641, Loss: 0.362636
+Iter: 580/641, Loss: 0.459837
+Iter: 600/641, Loss: 0.144823
+Iter: 620/641, Loss: 0.334406
+Iter: 640/641, Loss: 0.373331
+LR: 0.001
+Train accuracy: 0.959500
+Dev accuracy: 0.822821
+Epoch 14 use 66 seconds.
+Epoch 15...
+Iter: 20/641, Loss: 0.233964
+Iter: 40/641, Loss: 0.311575
+Iter: 60/641, Loss: 0.186658
+Iter: 80/641, Loss: 0.194092
+Iter: 100/641, Loss: 0.237517
+Iter: 120/641, Loss: 0.199885
+Iter: 140/641, Loss: 0.221444
+Iter: 160/641, Loss: 0.090434
+Iter: 180/641, Loss: 0.251816
+Iter: 200/641, Loss: 0.186553
+Iter: 220/641, Loss: 0.221679
+Iter: 240/641, Loss: 0.091999
+Iter: 260/641, Loss: 0.208518
+Iter: 280/641, Loss: 0.192666
+Iter: 300/641, Loss: 0.111624
+Iter: 320/641, Loss: 0.149594
+Iter: 340/641, Loss: 0.174124
+Iter: 360/641, Loss: 0.184233
+Iter: 380/641, Loss: 0.214871
+Iter: 400/641, Loss: 0.249116
+Iter: 420/641, Loss: 0.250192
+Iter: 440/641, Loss: 0.176265
+Iter: 460/641, Loss: 0.221107
+Iter: 480/641, Loss: 0.096388
+Iter: 500/641, Loss: 0.397154
+Iter: 520/641, Loss: 0.386212
+Iter: 540/641, Loss: 0.225666
+Iter: 560/641, Loss: 0.302160
+Iter: 580/641, Loss: 0.244682
+Iter: 600/641, Loss: 0.320612
+Iter: 620/641, Loss: 0.181044
+Iter: 640/641, Loss: 0.258463
+LR: 0.0005
+Train accuracy: 0.953000
+Dev accuracy: 0.822112
+Epoch 15 use 62 seconds.
+Epoch 16...
+Iter: 20/641, Loss: 0.196262
+Iter: 40/641, Loss: 0.265980
+Iter: 60/641, Loss: 0.154631
+Iter: 80/641, Loss: 0.230645
+Iter: 100/641, Loss: 0.263831
+Iter: 120/641, Loss: 0.198768
+Iter: 140/641, Loss: 0.259169
+Iter: 160/641, Loss: 0.189540
+Iter: 180/641, Loss: 0.312767
+Iter: 200/641, Loss: 0.298738
+Iter: 220/641, Loss: 0.205346
+Iter: 240/641, Loss: 0.212959
+Iter: 260/641, Loss: 0.409441
+Iter: 280/641, Loss: 0.206931
+Iter: 300/641, Loss: 0.193782
+Iter: 320/641, Loss: 0.197746
+Iter: 340/641, Loss: 0.245479
+Iter: 360/641, Loss: 0.188502
+Iter: 380/641, Loss: 0.137484
+Iter: 400/641, Loss: 0.185412
+Iter: 420/641, Loss: 0.157488
+Iter: 440/641, Loss: 0.174766
+Iter: 460/641, Loss: 0.225311
+Iter: 480/641, Loss: 0.263039
+Iter: 500/641, Loss: 0.233226
+Iter: 520/641, Loss: 0.101722
+Iter: 540/641, Loss: 0.093945
+Iter: 560/641, Loss: 0.265804
+Iter: 580/641, Loss: 0.166848
+Iter: 600/641, Loss: 0.182658
+Iter: 620/641, Loss: 0.185521
+Iter: 640/641, Loss: 0.173660
+LR: 0.0005
+Train accuracy: 0.965500
+Dev accuracy: 0.820695
+Epoch 16 use 66 seconds.
+Epoch 17...
+Iter: 20/641, Loss: 0.152059
+Iter: 40/641, Loss: 0.097612
+Iter: 60/641, Loss: 0.174835
+Iter: 80/641, Loss: 0.121906
+Iter: 100/641, Loss: 0.166927
+Iter: 120/641, Loss: 0.183542
+Iter: 140/641, Loss: 0.195621
+Iter: 160/641, Loss: 0.130372
+Iter: 180/641, Loss: 0.109996
+Iter: 200/641, Loss: 0.371259
+Iter: 220/641, Loss: 0.143028
+Iter: 240/641, Loss: 0.274449
+Iter: 260/641, Loss: 0.218969
+Iter: 280/641, Loss: 0.263615
+Iter: 300/641, Loss: 0.332650
+Iter: 320/641, Loss: 0.177513
+Iter: 340/641, Loss: 0.235717
+Iter: 360/641, Loss: 0.205418
+Iter: 380/641, Loss: 0.092369
+Iter: 400/641, Loss: 0.185142
+Iter: 420/641, Loss: 0.218186
+Iter: 440/641, Loss: 0.317160
+Iter: 460/641, Loss: 0.177310
+Iter: 480/641, Loss: 0.378869
+Iter: 500/641, Loss: 0.156878
+Iter: 520/641, Loss: 0.336512
+Iter: 540/641, Loss: 0.144573
+Iter: 560/641, Loss: 0.191129
+Iter: 580/641, Loss: 0.237501
+Iter: 600/641, Loss: 0.186944
+Iter: 620/641, Loss: 0.183591
+Iter: 640/641, Loss: 0.173588
+LR: 0.0005
+Train accuracy: 0.971500
+Dev accuracy: 0.822112
+Epoch 17 use 70 seconds.
+Epoch 18...
+Iter: 20/641, Loss: 0.263010
+Iter: 40/641, Loss: 0.170042
+Iter: 60/641, Loss: 0.209405
+Iter: 80/641, Loss: 0.254307
+Iter: 100/641, Loss: 0.228128
+Iter: 120/641, Loss: 0.231568
+Iter: 140/641, Loss: 0.102449
+Iter: 160/641, Loss: 0.146724
+Iter: 180/641, Loss: 0.215704
+Iter: 200/641, Loss: 0.153126
+Iter: 220/641, Loss: 0.161457
+Iter: 240/641, Loss: 0.204648
+Iter: 260/641, Loss: 0.086026
+Iter: 280/641, Loss: 0.230400
+Iter: 300/641, Loss: 0.284867
+Iter: 320/641, Loss: 0.296373
+Iter: 340/641, Loss: 0.155203
+Iter: 360/641, Loss: 0.131355
+Iter: 380/641, Loss: 0.203816
+Iter: 400/641, Loss: 0.201445
+Iter: 420/641, Loss: 0.107621
+Iter: 440/641, Loss: 0.282530
+Iter: 460/641, Loss: 0.194875
+Iter: 480/641, Loss: 0.112715
+Iter: 500/641, Loss: 0.114769
+Iter: 520/641, Loss: 0.241420
+Iter: 540/641, Loss: 0.202263
+Iter: 560/641, Loss: 0.193965
+Iter: 580/641, Loss: 0.119522
+Iter: 600/641, Loss: 0.321043
+Iter: 620/641, Loss: 0.123605
+Iter: 640/641, Loss: 0.085563
+LR: 0.0005
+Train accuracy: 0.967000
+Dev accuracy: 0.821403
+Epoch 18 use 72 seconds.
+Epoch 19...
+Iter: 20/641, Loss: 0.161335
+Iter: 40/641, Loss: 0.214908
+Iter: 60/641, Loss: 0.117434
+Iter: 80/641, Loss: 0.221635
+Iter: 100/641, Loss: 0.145758
+Iter: 120/641, Loss: 0.151097
+Iter: 140/641, Loss: 0.159537
+Iter: 160/641, Loss: 0.185394
+Iter: 180/641, Loss: 0.128302
+Iter: 200/641, Loss: 0.330172
+Iter: 220/641, Loss: 0.325858
+Iter: 240/641, Loss: 0.247787
+Iter: 260/641, Loss: 0.094868
+Iter: 280/641, Loss: 0.160415
+Iter: 300/641, Loss: 0.222621
+Iter: 320/641, Loss: 0.133519
+Iter: 340/641, Loss: 0.099494
+Iter: 360/641, Loss: 0.134442
+Iter: 380/641, Loss: 0.207228
+Iter: 400/641, Loss: 0.202008
+Iter: 420/641, Loss: 0.205613
+Iter: 440/641, Loss: 0.250771
+Iter: 460/641, Loss: 0.397138
+Iter: 480/641, Loss: 0.175612
+Iter: 500/641, Loss: 0.071847
+Iter: 520/641, Loss: 0.113761
+Iter: 540/641, Loss: 0.179368
+Iter: 560/641, Loss: 0.160739
+Iter: 580/641, Loss: 0.118760
+Iter: 600/641, Loss: 0.074969
+Iter: 620/641, Loss: 0.172089
+Iter: 640/641, Loss: 0.369678
+LR: 0.0005
+Train accuracy: 0.976000
+Dev accuracy: 0.819986
+Epoch 19 use 74 seconds.
+Epoch 20...
+Iter: 20/641, Loss: 0.146685
+Iter: 40/641, Loss: 0.123427
+Iter: 60/641, Loss: 0.052997
+Iter: 80/641, Loss: 0.267556
+Iter: 100/641, Loss: 0.115176
+Iter: 120/641, Loss: 0.109430
+Iter: 140/641, Loss: 0.087481
+Iter: 160/641, Loss: 0.144837
+Iter: 180/641, Loss: 0.142217
+Iter: 200/641, Loss: 0.179347
+Iter: 220/641, Loss: 0.093517
+Iter: 240/641, Loss: 0.246135
+Iter: 260/641, Loss: 0.274569
+Iter: 280/641, Loss: 0.267062
+Iter: 300/641, Loss: 0.124406
+Iter: 320/641, Loss: 0.173474
+Iter: 340/641, Loss: 0.079157
+Iter: 360/641, Loss: 0.106333
+Iter: 380/641, Loss: 0.440198
+Iter: 400/641, Loss: 0.268717
+Iter: 420/641, Loss: 0.116686
+Iter: 440/641, Loss: 0.157410
+Iter: 460/641, Loss: 0.144038
+Iter: 480/641, Loss: 0.215080
+Iter: 500/641, Loss: 0.122757
+Iter: 520/641, Loss: 0.373546
+Iter: 540/641, Loss: 0.251384
+Iter: 560/641, Loss: 0.172368
+Iter: 580/641, Loss: 0.348394
+Iter: 600/641, Loss: 0.106010
+Iter: 620/641, Loss: 0.273882
+Iter: 640/641, Loss: 0.197737
+LR: 0.0005
+Train accuracy: 0.975500
+Dev accuracy: 0.819277
+Epoch 20 use 73 seconds.
+Epoch 21...
+Iter: 20/641, Loss: 0.126577
+Iter: 40/641, Loss: 0.170516
+Iter: 60/641, Loss: 0.223996
+Iter: 80/641, Loss: 0.140715
+Iter: 100/641, Loss: 0.395192
+Iter: 120/641, Loss: 0.130874
+Iter: 140/641, Loss: 0.187392
+Iter: 160/641, Loss: 0.251788
+Iter: 180/641, Loss: 0.101924
+Iter: 200/641, Loss: 0.247611
+Iter: 220/641, Loss: 0.292442
+Iter: 240/641, Loss: 0.231019
+Iter: 260/641, Loss: 0.194913
+Iter: 280/641, Loss: 0.215553
+Iter: 300/641, Loss: 0.120567
+Iter: 320/641, Loss: 0.331520
+Iter: 340/641, Loss: 0.221026
+Iter: 360/641, Loss: 0.082815
+Iter: 380/641, Loss: 0.061454
+Iter: 400/641, Loss: 0.138120
+Iter: 420/641, Loss: 0.137928
+Iter: 440/641, Loss: 0.180326
+Iter: 460/641, Loss: 0.137556
+Iter: 480/641, Loss: 0.070615
+Iter: 500/641, Loss: 0.238292
+Iter: 520/641, Loss: 0.354755
+Iter: 540/641, Loss: 0.159825
+Iter: 560/641, Loss: 0.431129
+Iter: 580/641, Loss: 0.132492
+Iter: 600/641, Loss: 0.141238
+Iter: 620/641, Loss: 0.119182
+Iter: 640/641, Loss: 0.194488
+LR: 0.0005
+Train accuracy: 0.982000
+Dev accuracy: 0.822112
+Epoch 21 use 72 seconds.
+Epoch 22...
+Iter: 20/641, Loss: 0.162020
+Iter: 40/641, Loss: 0.095298
+Iter: 60/641, Loss: 0.145566
+Iter: 80/641, Loss: 0.078810
+Iter: 100/641, Loss: 0.161918
+Iter: 120/641, Loss: 0.208459
+Iter: 140/641, Loss: 0.195576
+Iter: 160/641, Loss: 0.216772
+Iter: 180/641, Loss: 0.118859
+Iter: 200/641, Loss: 0.070706
+Iter: 220/641, Loss: 0.062778
+Iter: 240/641, Loss: 0.112444
+Iter: 260/641, Loss: 0.154316
+Iter: 280/641, Loss: 0.148821
+Iter: 300/641, Loss: 0.075288
+Iter: 320/641, Loss: 0.255503
+Iter: 340/641, Loss: 0.233014
+Iter: 360/641, Loss: 0.147815
+Iter: 380/641, Loss: 0.171818
+Iter: 400/641, Loss: 0.295697
+Iter: 420/641, Loss: 0.079387
+Iter: 440/641, Loss: 0.094259
+Iter: 460/641, Loss: 0.105569
+Iter: 480/641, Loss: 0.226316
+Iter: 500/641, Loss: 0.128669
+Iter: 520/641, Loss: 0.182889
+Iter: 540/641, Loss: 0.132404
+Iter: 560/641, Loss: 0.236640
+Iter: 580/641, Loss: 0.152356
+Iter: 600/641, Loss: 0.173422
+Iter: 620/641, Loss: 0.140578
+Iter: 640/641, Loss: 0.132188
+LR: 0.0005
+Train accuracy: 0.977500
+Dev accuracy: 0.815025
+Epoch 22 use 73 seconds.
+Epoch 23...
+Iter: 20/641, Loss: 0.237310
+Iter: 40/641, Loss: 0.305009
+Iter: 60/641, Loss: 0.123763
+Iter: 80/641, Loss: 0.154113
+Iter: 100/641, Loss: 0.165935
+Iter: 120/641, Loss: 0.169330
+Iter: 140/641, Loss: 0.183208
+Iter: 160/641, Loss: 0.207711
+Iter: 180/641, Loss: 0.166177
+Iter: 200/641, Loss: 0.193957
+Iter: 220/641, Loss: 0.175605
+Iter: 240/641, Loss: 0.148929
+Iter: 260/641, Loss: 0.183238
+Iter: 280/641, Loss: 0.156123
+Iter: 300/641, Loss: 0.110880
+Iter: 320/641, Loss: 0.201138
+Iter: 340/641, Loss: 0.172610
+Iter: 360/641, Loss: 0.080925
+Iter: 380/641, Loss: 0.210682
+Iter: 400/641, Loss: 0.119060
+Iter: 420/641, Loss: 0.122406
+Iter: 440/641, Loss: 0.174625
+Iter: 460/641, Loss: 0.133484
+Iter: 480/641, Loss: 0.389420
+Iter: 500/641, Loss: 0.060473
+Iter: 520/641, Loss: 0.128658
+Iter: 540/641, Loss: 0.212313
+Iter: 560/641, Loss: 0.130074
+Iter: 580/641, Loss: 0.118047
+Iter: 600/641, Loss: 0.136377
+Iter: 620/641, Loss: 0.284937
+Iter: 640/641, Loss: 0.297491
+LR: 0.0005
+Train accuracy: 0.977500
+Dev accuracy: 0.815734
+Epoch 23 use 74 seconds.
+Epoch 24...
+Iter: 20/641, Loss: 0.222862
+Iter: 40/641, Loss: 0.221565
+Iter: 60/641, Loss: 0.256559
+Iter: 80/641, Loss: 0.044712
+Iter: 100/641, Loss: 0.282319
+Iter: 120/641, Loss: 0.088229
+Iter: 140/641, Loss: 0.160692
+Iter: 160/641, Loss: 0.371017
+Iter: 180/641, Loss: 0.145674
+Iter: 200/641, Loss: 0.100788
+Iter: 220/641, Loss: 0.119015
+Iter: 240/641, Loss: 0.165598
+Iter: 260/641, Loss: 0.115616
+Iter: 280/641, Loss: 0.151034
+Iter: 300/641, Loss: 0.138422
+Iter: 320/641, Loss: 0.107023
+Iter: 340/641, Loss: 0.147458
+Iter: 360/641, Loss: 0.300251
+Iter: 380/641, Loss: 0.235164
+Iter: 400/641, Loss: 0.121686
+Iter: 420/641, Loss: 0.195542
+Iter: 440/641, Loss: 0.223665
+Iter: 460/641, Loss: 0.123279
+Iter: 480/641, Loss: 0.154336
+Iter: 500/641, Loss: 0.165663
+Iter: 520/641, Loss: 0.049262
+Iter: 540/641, Loss: 0.128499
+Iter: 560/641, Loss: 0.099217
+Iter: 580/641, Loss: 0.329425
+Iter: 600/641, Loss: 0.134012
+Iter: 620/641, Loss: 0.109938
+Iter: 640/641, Loss: 0.147506
+LR: 0.0005
+Train accuracy: 0.976500
+Dev accuracy: 0.817151
+Epoch 24 use 73 seconds.
+Epoch 25...
+Iter: 20/641, Loss: 0.106825
+Iter: 40/641, Loss: 0.234850
+Iter: 60/641, Loss: 0.169852
+Iter: 80/641, Loss: 0.191306
+Iter: 100/641, Loss: 0.197483
+Iter: 120/641, Loss: 0.131692
+Iter: 140/641, Loss: 0.042112
+Iter: 160/641, Loss: 0.183068
+Iter: 180/641, Loss: 0.202602
+Iter: 200/641, Loss: 0.202796
+Iter: 220/641, Loss: 0.173118
+Iter: 240/641, Loss: 0.039178
+Iter: 260/641, Loss: 0.113297
+Iter: 280/641, Loss: 0.168188
+Iter: 300/641, Loss: 0.093790
+Iter: 320/641, Loss: 0.209002
+Iter: 340/641, Loss: 0.156467
+Iter: 360/641, Loss: 0.142601
+Iter: 380/641, Loss: 0.135144
+Iter: 400/641, Loss: 0.132024
+Iter: 420/641, Loss: 0.142583
+Iter: 440/641, Loss: 0.179742
+Iter: 460/641, Loss: 0.154820
+Iter: 480/641, Loss: 0.064350
+Iter: 500/641, Loss: 0.196582
+Iter: 520/641, Loss: 0.124921
+Iter: 540/641, Loss: 0.105353
+Iter: 560/641, Loss: 0.098322
+Iter: 580/641, Loss: 0.059855
+Iter: 600/641, Loss: 0.123652
+Iter: 620/641, Loss: 0.083853
+Iter: 640/641, Loss: 0.239100
+LR: 0.0005
+Train accuracy: 0.977000
+Dev accuracy: 0.826364
+Epoch 25 use 64 seconds.
+Epoch 26...
+Iter: 20/641, Loss: 0.037294
+Iter: 40/641, Loss: 0.229155
+Iter: 60/641, Loss: 0.218601
+Iter: 80/641, Loss: 0.086613
+Iter: 100/641, Loss: 0.184359
+Iter: 120/641, Loss: 0.095042
+Iter: 140/641, Loss: 0.080333
+Iter: 160/641, Loss: 0.176328
+Iter: 180/641, Loss: 0.122438
+Iter: 200/641, Loss: 0.090624
+Iter: 220/641, Loss: 0.171624
+Iter: 240/641, Loss: 0.135739
+Iter: 260/641, Loss: 0.152674
+Iter: 280/641, Loss: 0.136930
+Iter: 300/641, Loss: 0.152094
+Iter: 320/641, Loss: 0.105782
+Iter: 340/641, Loss: 0.132021
+Iter: 360/641, Loss: 0.150738
+Iter: 380/641, Loss: 0.153612
+Iter: 400/641, Loss: 0.232274
+Iter: 420/641, Loss: 0.113898
+Iter: 440/641, Loss: 0.132448
+Iter: 460/641, Loss: 0.149414
+Iter: 480/641, Loss: 0.209218
+Iter: 500/641, Loss: 0.165921
+Iter: 520/641, Loss: 0.277738
+Iter: 540/641, Loss: 0.055996
+Iter: 560/641, Loss: 0.110650
+Iter: 580/641, Loss: 0.075408
+Iter: 600/641, Loss: 0.063996
+Iter: 620/641, Loss: 0.277668
+Iter: 640/641, Loss: 0.056153
+LR: 0.0005
+Train accuracy: 0.984500
+Dev accuracy: 0.821403
+Epoch 26 use 69 seconds.
+Epoch 27...
+Iter: 20/641, Loss: 0.128039
+Iter: 40/641, Loss: 0.118039
+Iter: 60/641, Loss: 0.041752
+Iter: 80/641, Loss: 0.092369
+Iter: 100/641, Loss: 0.107982
+Iter: 120/641, Loss: 0.212776
+Iter: 140/641, Loss: 0.128185
+Iter: 160/641, Loss: 0.136304
+Iter: 180/641, Loss: 0.100321
+Iter: 200/641, Loss: 0.048860
+Iter: 220/641, Loss: 0.192608
+Iter: 240/641, Loss: 0.073439
+Iter: 260/641, Loss: 0.057234
+Iter: 280/641, Loss: 0.198317
+Iter: 300/641, Loss: 0.187363
+Iter: 320/641, Loss: 0.151490
+Iter: 340/641, Loss: 0.154345
+Iter: 360/641, Loss: 0.277175
+Iter: 380/641, Loss: 0.082570
+Iter: 400/641, Loss: 0.123040
+Iter: 420/641, Loss: 0.169577
+Iter: 440/641, Loss: 0.059179
+Iter: 460/641, Loss: 0.058930
+Iter: 480/641, Loss: 0.092170
+Iter: 500/641, Loss: 0.154371
+Iter: 520/641, Loss: 0.083330
+Iter: 540/641, Loss: 0.112171
+Iter: 560/641, Loss: 0.168754
+Iter: 580/641, Loss: 0.152827
+Iter: 600/641, Loss: 0.204725
+Iter: 620/641, Loss: 0.170160
+Iter: 640/641, Loss: 0.229982
+LR: 0.0005
+Train accuracy: 0.986500
+Dev accuracy: 0.823529
+Epoch 27 use 69 seconds.
+Epoch 28...
+Iter: 20/641, Loss: 0.218641
+Iter: 40/641, Loss: 0.236197
+Iter: 60/641, Loss: 0.301952
+Iter: 80/641, Loss: 0.031908
+Iter: 100/641, Loss: 0.073011
+Iter: 120/641, Loss: 0.122806
+Iter: 140/641, Loss: 0.082732
+Iter: 160/641, Loss: 0.168690
+Iter: 180/641, Loss: 0.080587
+Iter: 200/641, Loss: 0.154848
+Iter: 220/641, Loss: 0.166804
+Iter: 240/641, Loss: 0.163708
+Iter: 260/641, Loss: 0.175291
+Iter: 280/641, Loss: 0.128853
+Iter: 300/641, Loss: 0.112668
+Iter: 320/641, Loss: 0.183107
+Iter: 340/641, Loss: 0.093187
+Iter: 360/641, Loss: 0.221157
+Iter: 380/641, Loss: 0.179201
+Iter: 400/641, Loss: 0.160812
+Iter: 420/641, Loss: 0.078492
+Iter: 440/641, Loss: 0.157485
+Iter: 460/641, Loss: 0.190505
+Iter: 480/641, Loss: 0.067645
+Iter: 500/641, Loss: 0.046922
+Iter: 520/641, Loss: 0.193108
+Iter: 540/641, Loss: 0.057134
+Iter: 560/641, Loss: 0.196934
+Iter: 580/641, Loss: 0.088289
+Iter: 600/641, Loss: 0.377704
+Iter: 620/641, Loss: 0.065135
+Iter: 640/641, Loss: 0.173368
+LR: 0.0005
+Train accuracy: 0.987000
+Dev accuracy: 0.819986
+Epoch 28 use 69 seconds.
+Epoch 29...
+Iter: 20/641, Loss: 0.041355
+Iter: 40/641, Loss: 0.173813
+Iter: 60/641, Loss: 0.249034
+Iter: 80/641, Loss: 0.054580
+Iter: 100/641, Loss: 0.199421
+Iter: 120/641, Loss: 0.122892
+Iter: 140/641, Loss: 0.104916
+Iter: 160/641, Loss: 0.155302
+Iter: 180/641, Loss: 0.071874
+Iter: 200/641, Loss: 0.160056
+Iter: 220/641, Loss: 0.051439
+Iter: 240/641, Loss: 0.111934
+Iter: 260/641, Loss: 0.144786
+Iter: 280/641, Loss: 0.096018
+Iter: 300/641, Loss: 0.243613
+Iter: 320/641, Loss: 0.294156
+Iter: 340/641, Loss: 0.102432
+Iter: 360/641, Loss: 0.086185
+Iter: 380/641, Loss: 0.135998
+Iter: 400/641, Loss: 0.267247
+Iter: 420/641, Loss: 0.277047
+Iter: 440/641, Loss: 0.168446
+Iter: 460/641, Loss: 0.096148
+Iter: 480/641, Loss: 0.104710
+Iter: 500/641, Loss: 0.116886
+Iter: 520/641, Loss: 0.133854
+Iter: 540/641, Loss: 0.117644
+Iter: 560/641, Loss: 0.108477
+Iter: 580/641, Loss: 0.099265
+Iter: 600/641, Loss: 0.092721
+Iter: 620/641, Loss: 0.104901
+Iter: 640/641, Loss: 0.139935
+LR: 0.0005
+Train accuracy: 0.988500
+Dev accuracy: 0.815025
+Epoch 29 use 73 seconds.
+Epoch 30...
+Iter: 20/641, Loss: 0.064864
+Iter: 40/641, Loss: 0.151037
+Iter: 60/641, Loss: 0.307042
+Iter: 80/641, Loss: 0.041287
+Iter: 100/641, Loss: 0.206532
+Iter: 120/641, Loss: 0.195599
+Iter: 140/641, Loss: 0.177801
+Iter: 160/641, Loss: 0.115222
+Iter: 180/641, Loss: 0.119348
+Iter: 200/641, Loss: 0.261232
+Iter: 220/641, Loss: 0.220936
+Iter: 240/641, Loss: 0.159356
+Iter: 260/641, Loss: 0.267446
+Iter: 280/641, Loss: 0.061066
+Iter: 300/641, Loss: 0.080217
+Iter: 320/641, Loss: 0.188218
+Iter: 340/641, Loss: 0.167884
+Iter: 360/641, Loss: 0.082388
+Iter: 380/641, Loss: 0.222151
+Iter: 400/641, Loss: 0.092286
+Iter: 420/641, Loss: 0.174436
+Iter: 440/641, Loss: 0.277056
+Iter: 460/641, Loss: 0.062236
+Iter: 480/641, Loss: 0.128070
+Iter: 500/641, Loss: 0.219129
+Iter: 520/641, Loss: 0.090298
+Iter: 540/641, Loss: 0.164255
+Iter: 560/641, Loss: 0.057507
+Iter: 580/641, Loss: 0.217233
+Iter: 600/641, Loss: 0.205287
+Iter: 620/641, Loss: 0.096794
+Iter: 640/641, Loss: 0.147827
+LR: 0.0005
+Train accuracy: 0.987500
+Dev accuracy: 0.821403
+Epoch 30 use 63 seconds.
+Epoch 31...
+Iter: 20/641, Loss: 0.104612
+Iter: 40/641, Loss: 0.133746
+Iter: 60/641, Loss: 0.099213
+Iter: 80/641, Loss: 0.149981
+Iter: 100/641, Loss: 0.162379
+Iter: 120/641, Loss: 0.138009
+Iter: 140/641, Loss: 0.089089
+Iter: 160/641, Loss: 0.203844
+Iter: 180/641, Loss: 0.137816
+Iter: 200/641, Loss: 0.062848
+Iter: 220/641, Loss: 0.074837
+Iter: 240/641, Loss: 0.265287
+Iter: 260/641, Loss: 0.151359
+Iter: 280/641, Loss: 0.267792
+Iter: 300/641, Loss: 0.413934
+Iter: 320/641, Loss: 0.070958
+Iter: 340/641, Loss: 0.136379
+Iter: 360/641, Loss: 0.179457
+Iter: 380/641, Loss: 0.157393
+Iter: 400/641, Loss: 0.111260
+Iter: 420/641, Loss: 0.087792
+Iter: 440/641, Loss: 0.247618
+Iter: 460/641, Loss: 0.099634
+Iter: 480/641, Loss: 0.086092
+Iter: 500/641, Loss: 0.092563
+Iter: 520/641, Loss: 0.100139
+Iter: 540/641, Loss: 0.331354
+Iter: 560/641, Loss: 0.114602
+Iter: 580/641, Loss: 0.055260
+Iter: 600/641, Loss: 0.134160
+Iter: 620/641, Loss: 0.065455
+Iter: 640/641, Loss: 0.085553
+LR: 0.0005
+Train accuracy: 0.988500
+Dev accuracy: 0.819986
+Epoch 31 use 63 seconds.
+Epoch 32...
+Iter: 20/641, Loss: 0.233613
+Iter: 40/641, Loss: 0.153893
+Iter: 60/641, Loss: 0.133923
+Iter: 80/641, Loss: 0.049061
+Iter: 100/641, Loss: 0.065465
+Iter: 120/641, Loss: 0.097884
+Iter: 140/641, Loss: 0.316343
+Iter: 160/641, Loss: 0.038591
+Iter: 180/641, Loss: 0.106469
+Iter: 200/641, Loss: 0.113297
+Iter: 220/641, Loss: 0.082829
+Iter: 240/641, Loss: 0.113785
+Iter: 260/641, Loss: 0.084812
+Iter: 280/641, Loss: 0.160064
+Iter: 300/641, Loss: 0.088084
+Iter: 320/641, Loss: 0.133174
+Iter: 340/641, Loss: 0.076878
+Iter: 360/641, Loss: 0.244090
+Iter: 380/641, Loss: 0.050685
+Iter: 400/641, Loss: 0.129956
+Iter: 420/641, Loss: 0.070670
+Iter: 440/641, Loss: 0.129781
+Iter: 460/641, Loss: 0.063025
+Iter: 480/641, Loss: 0.130650
+Iter: 500/641, Loss: 0.110463
+Iter: 520/641, Loss: 0.043982
+Iter: 540/641, Loss: 0.258180
+Iter: 560/641, Loss: 0.108214
+Iter: 580/641, Loss: 0.022698
+Iter: 600/641, Loss: 0.080956
+Iter: 620/641, Loss: 0.156751
+Iter: 640/641, Loss: 0.053632
+LR: 0.0005
+Train accuracy: 0.991000
+Dev accuracy: 0.820695
+Epoch 32 use 60 seconds.
+Epoch 33...
+Iter: 20/641, Loss: 0.171312
+Iter: 40/641, Loss: 0.082556
+Iter: 60/641, Loss: 0.146613
+Iter: 80/641, Loss: 0.086005
+Iter: 100/641, Loss: 0.110538
+Iter: 120/641, Loss: 0.135247
+Iter: 140/641, Loss: 0.099538
+Iter: 160/641, Loss: 0.049557
+Iter: 180/641, Loss: 0.068982
+Iter: 200/641, Loss: 0.344135
+Iter: 220/641, Loss: 0.182785
+Iter: 240/641, Loss: 0.162041
+Iter: 260/641, Loss: 0.110131
+Iter: 280/641, Loss: 0.283783
+Iter: 300/641, Loss: 0.140239
+Iter: 320/641, Loss: 0.052957
+Iter: 340/641, Loss: 0.030047
+Iter: 360/641, Loss: 0.107425
+Iter: 380/641, Loss: 0.121690
+Iter: 400/641, Loss: 0.042036
+Iter: 420/641, Loss: 0.167523
+Iter: 440/641, Loss: 0.086728
+Iter: 460/641, Loss: 0.118792
+Iter: 480/641, Loss: 0.087614
+Iter: 500/641, Loss: 0.058809
+Iter: 520/641, Loss: 0.203594
+Iter: 540/641, Loss: 0.072847
+Iter: 560/641, Loss: 0.145543
+Iter: 580/641, Loss: 0.134920
+Iter: 600/641, Loss: 0.182239
+Iter: 620/641, Loss: 0.319746
+Iter: 640/641, Loss: 0.100904
+LR: 0.0005
+Train accuracy: 0.990500
+Dev accuracy: 0.819986
+Epoch 33 use 66 seconds.
+Epoch 34...
+Iter: 20/641, Loss: 0.233253
+Iter: 40/641, Loss: 0.136791
+Iter: 60/641, Loss: 0.082681
+Iter: 80/641, Loss: 0.376469
+Iter: 100/641, Loss: 0.059681
+Iter: 120/641, Loss: 0.101474
+Iter: 140/641, Loss: 0.194497
+Iter: 160/641, Loss: 0.105850
+Iter: 180/641, Loss: 0.121754
+Iter: 200/641, Loss: 0.089684
+Iter: 220/641, Loss: 0.120299
+Iter: 240/641, Loss: 0.112502
+Iter: 260/641, Loss: 0.119475
+Iter: 280/641, Loss: 0.187475
+Iter: 300/641, Loss: 0.080721
+Iter: 320/641, Loss: 0.089089
+Iter: 340/641, Loss: 0.095922
+Iter: 360/641, Loss: 0.192784
+Iter: 380/641, Loss: 0.157290
+Iter: 400/641, Loss: 0.042420
+Iter: 420/641, Loss: 0.172097
+Iter: 440/641, Loss: 0.104097
+Iter: 460/641, Loss: 0.059332
+Iter: 480/641, Loss: 0.130206
+Iter: 500/641, Loss: 0.056633
+Iter: 520/641, Loss: 0.127085
+Iter: 540/641, Loss: 0.135025
+Iter: 560/641, Loss: 0.323733
+Iter: 580/641, Loss: 0.073522
+Iter: 600/641, Loss: 0.020916
+Iter: 620/641, Loss: 0.052065
+Iter: 640/641, Loss: 0.122682
+LR: 0.0005
+Train accuracy: 0.988000
+Dev accuracy: 0.819986
+Epoch 34 use 65 seconds.
+Epoch 35...
+Iter: 20/641, Loss: 0.185728
+Iter: 40/641, Loss: 0.225700
+Iter: 60/641, Loss: 0.165243
+Iter: 80/641, Loss: 0.379117
+Iter: 100/641, Loss: 0.107671
+Iter: 120/641, Loss: 0.139015
+Iter: 140/641, Loss: 0.098675
+Iter: 160/641, Loss: 0.138830
+Iter: 180/641, Loss: 0.190532
+Iter: 200/641, Loss: 0.139342
+Iter: 220/641, Loss: 0.084747
+Iter: 240/641, Loss: 0.138569
+Iter: 260/641, Loss: 0.093286
+Iter: 280/641, Loss: 0.115548
+Iter: 300/641, Loss: 0.142112
+Iter: 320/641, Loss: 0.148196
+Iter: 340/641, Loss: 0.117036
+Iter: 360/641, Loss: 0.160312
+Iter: 380/641, Loss: 0.077996
+Iter: 400/641, Loss: 0.086827
+Iter: 420/641, Loss: 0.046890
+Iter: 440/641, Loss: 0.143135
+Iter: 460/641, Loss: 0.058720
+Iter: 480/641, Loss: 0.096541
+Iter: 500/641, Loss: 0.063513
+Iter: 520/641, Loss: 0.048622
+Iter: 540/641, Loss: 0.077949
+Iter: 560/641, Loss: 0.030105
+Iter: 580/641, Loss: 0.164814
+Iter: 600/641, Loss: 0.022438
+Iter: 620/641, Loss: 0.079780
+Iter: 640/641, Loss: 0.071063
+LR: 0.0005
+Train accuracy: 0.994000
+Dev accuracy: 0.824238
+Epoch 35 use 63 seconds.
+Epoch 36...
+Iter: 20/641, Loss: 0.074047
+Iter: 40/641, Loss: 0.115721
+Iter: 60/641, Loss: 0.060863
+Iter: 80/641, Loss: 0.140275
+Iter: 100/641, Loss: 0.132868
+Iter: 120/641, Loss: 0.073784
+Iter: 140/641, Loss: 0.123539
+Iter: 160/641, Loss: 0.158829
+Iter: 180/641, Loss: 0.178007
+Iter: 200/641, Loss: 0.109623
+Iter: 220/641, Loss: 0.142410
+Iter: 240/641, Loss: 0.070129
+Iter: 260/641, Loss: 0.073836
+Iter: 280/641, Loss: 0.187440
+Iter: 300/641, Loss: 0.155331
+Iter: 320/641, Loss: 0.062103
+Iter: 340/641, Loss: 0.161131
+Iter: 360/641, Loss: 0.034443
+Iter: 380/641, Loss: 0.123748
+Iter: 400/641, Loss: 0.122023
+Iter: 420/641, Loss: 0.103689
+Iter: 440/641, Loss: 0.364364
+Iter: 460/641, Loss: 0.153157
+Iter: 480/641, Loss: 0.105965
+Iter: 500/641, Loss: 0.064642
+Iter: 520/641, Loss: 0.023727
+Iter: 540/641, Loss: 0.123467
+Iter: 560/641, Loss: 0.104034
+Iter: 580/641, Loss: 0.153446
+Iter: 600/641, Loss: 0.098061
+Iter: 620/641, Loss: 0.078620
+Iter: 640/641, Loss: 0.139032
+LR: 0.0005
+Train accuracy: 0.989000
+Dev accuracy: 0.818568
+Epoch 36 use 57 seconds.
+Epoch 37...
+Iter: 20/641, Loss: 0.186494
+Iter: 40/641, Loss: 0.186519
+Iter: 60/641, Loss: 0.287177
+Iter: 80/641, Loss: 0.135730
+Iter: 100/641, Loss: 0.118043
+Iter: 120/641, Loss: 0.121068
+Iter: 140/641, Loss: 0.198000
+Iter: 160/641, Loss: 0.092920
+Iter: 180/641, Loss: 0.066341
+Iter: 200/641, Loss: 0.044577
+Iter: 220/641, Loss: 0.060713
+Iter: 240/641, Loss: 0.307632
+Iter: 260/641, Loss: 0.151158
+Iter: 280/641, Loss: 0.045598
+Iter: 300/641, Loss: 0.067061
+Iter: 320/641, Loss: 0.237001
+Iter: 340/641, Loss: 0.036638
+Iter: 360/641, Loss: 0.158483
+Iter: 380/641, Loss: 0.120313
+Iter: 400/641, Loss: 0.150607
+Iter: 420/641, Loss: 0.184684
+Iter: 440/641, Loss: 0.073049
+Iter: 460/641, Loss: 0.050910
+Iter: 480/641, Loss: 0.151122
+Iter: 500/641, Loss: 0.076123
+Iter: 520/641, Loss: 0.132215
+Iter: 540/641, Loss: 0.160972
+Iter: 560/641, Loss: 0.164528
+Iter: 580/641, Loss: 0.137086
+Iter: 600/641, Loss: 0.220640
+Iter: 620/641, Loss: 0.094203
+Iter: 640/641, Loss: 0.087460
+LR: 0.0005
+Train accuracy: 0.991000
+Dev accuracy: 0.823529
+Epoch 37 use 56 seconds.
+Epoch 38...
+Iter: 20/641, Loss: 0.085362
+Iter: 40/641, Loss: 0.098622
+Iter: 60/641, Loss: 0.210824
+Iter: 80/641, Loss: 0.074709
+Iter: 100/641, Loss: 0.063018
+Iter: 120/641, Loss: 0.082384
+Iter: 140/641, Loss: 0.045134
+Iter: 160/641, Loss: 0.124183
+Iter: 180/641, Loss: 0.203722
+Iter: 200/641, Loss: 0.077938
+Iter: 220/641, Loss: 0.055917
+Iter: 240/641, Loss: 0.053805
+Iter: 260/641, Loss: 0.230180
+Iter: 280/641, Loss: 0.066219
+Iter: 300/641, Loss: 0.060857
+Iter: 320/641, Loss: 0.150092
+Iter: 340/641, Loss: 0.105150
+Iter: 360/641, Loss: 0.033204
+Iter: 380/641, Loss: 0.403924
+Iter: 400/641, Loss: 0.022290
+Iter: 420/641, Loss: 0.036856
+Iter: 440/641, Loss: 0.092385
+Iter: 460/641, Loss: 0.057450
+Iter: 480/641, Loss: 0.167297
+Iter: 500/641, Loss: 0.109622
+Iter: 520/641, Loss: 0.202648
+Iter: 540/641, Loss: 0.129814
+Iter: 560/641, Loss: 0.068954
+Iter: 580/641, Loss: 0.263099
+Iter: 600/641, Loss: 0.093015
+Iter: 620/641, Loss: 0.067144
+Iter: 640/641, Loss: 0.030617
+LR: 0.0005
+Train accuracy: 0.992000
+Dev accuracy: 0.817151
+Epoch 38 use 57 seconds.
+Epoch 39...
+Iter: 20/641, Loss: 0.014853
+Iter: 40/641, Loss: 0.104115
+Iter: 60/641, Loss: 0.051918
+Iter: 80/641, Loss: 0.096632
+Iter: 100/641, Loss: 0.071437
+Iter: 120/641, Loss: 0.078227
+Iter: 140/641, Loss: 0.080334
+Iter: 160/641, Loss: 0.065901
+Iter: 180/641, Loss: 0.103339
+Iter: 200/641, Loss: 0.094658
+Iter: 220/641, Loss: 0.148614
+Iter: 240/641, Loss: 0.102120
+Iter: 260/641, Loss: 0.058280
+Iter: 280/641, Loss: 0.221557
+Iter: 300/641, Loss: 0.067089
+Iter: 320/641, Loss: 0.219794
+Iter: 340/641, Loss: 0.071595
+Iter: 360/641, Loss: 0.201437
+Iter: 380/641, Loss: 0.103841
+Iter: 400/641, Loss: 0.161663
+Iter: 420/641, Loss: 0.071735
+Iter: 440/641, Loss: 0.128023
+Iter: 460/641, Loss: 0.082620
+Iter: 480/641, Loss: 0.018293
+Iter: 500/641, Loss: 0.034847
+Iter: 520/641, Loss: 0.098459
+Iter: 540/641, Loss: 0.071792
+Iter: 560/641, Loss: 0.067748
+Iter: 580/641, Loss: 0.122692
+Iter: 600/641, Loss: 0.147805
+Iter: 620/641, Loss: 0.070010
+Iter: 640/641, Loss: 0.139380
+LR: 0.0005
+Train accuracy: 0.992000
+Dev accuracy: 0.816442
+Epoch 39 use 57 seconds.
+Epoch 40...
+Iter: 20/641, Loss: 0.040806
+Iter: 40/641, Loss: 0.090963
+Iter: 60/641, Loss: 0.225189
+Iter: 80/641, Loss: 0.135238
+Iter: 100/641, Loss: 0.056960
+Iter: 120/641, Loss: 0.099756
+Iter: 140/641, Loss: 0.150742
+Iter: 160/641, Loss: 0.103771
+Iter: 180/641, Loss: 0.077261
+Iter: 200/641, Loss: 0.038119
+Iter: 220/641, Loss: 0.121980
+Iter: 240/641, Loss: 0.158284
+Iter: 260/641, Loss: 0.068783
+Iter: 280/641, Loss: 0.111294
+Iter: 300/641, Loss: 0.186636
+Iter: 320/641, Loss: 0.052917
+Iter: 340/641, Loss: 0.058088
+Iter: 360/641, Loss: 0.146283
+Iter: 380/641, Loss: 0.041771
+Iter: 400/641, Loss: 0.123836
+Iter: 420/641, Loss: 0.052231
+Iter: 440/641, Loss: 0.138169
+Iter: 460/641, Loss: 0.133658
+Iter: 480/641, Loss: 0.054417
+Iter: 500/641, Loss: 0.048796
+Iter: 520/641, Loss: 0.107061
+Iter: 540/641, Loss: 0.139956
+Iter: 560/641, Loss: 0.175283
+Iter: 580/641, Loss: 0.093716
+Iter: 600/641, Loss: 0.070360
+Iter: 620/641, Loss: 0.056716
+Iter: 640/641, Loss: 0.239180
+LR: 0.0005
+Train accuracy: 0.995000
+Dev accuracy: 0.816442
+Epoch 40 use 72 seconds.
+Epoch 41...
+Iter: 20/641, Loss: 0.126681
+Iter: 40/641, Loss: 0.093430
+Iter: 60/641, Loss: 0.116628
+Iter: 80/641, Loss: 0.131138
+Iter: 100/641, Loss: 0.102632
+Iter: 120/641, Loss: 0.112564
+Iter: 140/641, Loss: 0.066097
+Iter: 160/641, Loss: 0.054925
+Iter: 180/641, Loss: 0.067556
+Iter: 200/641, Loss: 0.178025
+Iter: 220/641, Loss: 0.133869
+Iter: 240/641, Loss: 0.061869
+Iter: 260/641, Loss: 0.138080
+Iter: 280/641, Loss: 0.031941
+Iter: 300/641, Loss: 0.110712
+Iter: 320/641, Loss: 0.095721
+Iter: 340/641, Loss: 0.049607
+Iter: 360/641, Loss: 0.085436
+Iter: 380/641, Loss: 0.117878
+Iter: 400/641, Loss: 0.104044
+Iter: 420/641, Loss: 0.100457
+Iter: 440/641, Loss: 0.073518
+Iter: 460/641, Loss: 0.143832
+Iter: 480/641, Loss: 0.277760
+Iter: 500/641, Loss: 0.070156
+Iter: 520/641, Loss: 0.075178
+Iter: 540/641, Loss: 0.253509
+Iter: 560/641, Loss: 0.046773
+Iter: 580/641, Loss: 0.141718
+Iter: 600/641, Loss: 0.188089
+Iter: 620/641, Loss: 0.121436
+Iter: 640/641, Loss: 0.065528
+LR: 0.0005
+Train accuracy: 0.997000
+Dev accuracy: 0.822112
+Epoch 41 use 69 seconds.
+Epoch 42...
+Iter: 20/641, Loss: 0.091620
+Iter: 40/641, Loss: 0.268818
+Iter: 60/641, Loss: 0.222219
+Iter: 80/641, Loss: 0.047270
+Iter: 100/641, Loss: 0.123977
+Iter: 120/641, Loss: 0.051838
+Iter: 140/641, Loss: 0.061550
+Iter: 160/641, Loss: 0.140255
+Iter: 180/641, Loss: 0.046042
+Iter: 200/641, Loss: 0.222203
+Iter: 220/641, Loss: 0.099246
+Iter: 240/641, Loss: 0.055903
+Iter: 260/641, Loss: 0.075371
+Iter: 280/641, Loss: 0.038248
+Iter: 300/641, Loss: 0.044307
+Iter: 320/641, Loss: 0.069145
+Iter: 340/641, Loss: 0.081189
+Iter: 360/641, Loss: 0.053945
+Iter: 380/641, Loss: 0.076395
+Iter: 400/641, Loss: 0.132921
+Iter: 420/641, Loss: 0.057247
+Iter: 440/641, Loss: 0.157026
+Iter: 460/641, Loss: 0.165962
+Iter: 480/641, Loss: 0.097215
+Iter: 500/641, Loss: 0.031644
+Iter: 520/641, Loss: 0.045043
+Iter: 540/641, Loss: 0.037037
+Iter: 560/641, Loss: 0.020036
+Iter: 580/641, Loss: 0.069578
+Iter: 600/641, Loss: 0.127758
+Iter: 620/641, Loss: 0.205982
+Iter: 640/641, Loss: 0.043676
+LR: 0.0005
+Train accuracy: 0.994000
+Dev accuracy: 0.817860
+Epoch 42 use 63 seconds.
+Epoch 43...
+Iter: 20/641, Loss: 0.049754
+Iter: 40/641, Loss: 0.036724
+Iter: 60/641, Loss: 0.089154
+Iter: 80/641, Loss: 0.037519
+Iter: 100/641, Loss: 0.096036
+Iter: 120/641, Loss: 0.067867
+Iter: 140/641, Loss: 0.059634
+Iter: 160/641, Loss: 0.053672
+Iter: 180/641, Loss: 0.103952
+Iter: 200/641, Loss: 0.019955
+Iter: 220/641, Loss: 0.047370
+Iter: 240/641, Loss: 0.046199
+Iter: 260/641, Loss: 0.074191
+Iter: 280/641, Loss: 0.270932
+Iter: 300/641, Loss: 0.101520
+Iter: 320/641, Loss: 0.224302
+Iter: 340/641, Loss: 0.161525
+Iter: 360/641, Loss: 0.067879
+Iter: 380/641, Loss: 0.298395
+Iter: 400/641, Loss: 0.242482
+Iter: 420/641, Loss: 0.108032
+Iter: 440/641, Loss: 0.099658
+Iter: 460/641, Loss: 0.108239
+Iter: 480/641, Loss: 0.149751
+Iter: 500/641, Loss: 0.026408
+Iter: 520/641, Loss: 0.138178
+Iter: 540/641, Loss: 0.103034
+Iter: 560/641, Loss: 0.070113
+Iter: 580/641, Loss: 0.039731
+Iter: 600/641, Loss: 0.117032
+Iter: 620/641, Loss: 0.053656
+Iter: 640/641, Loss: 0.088304
+LR: 0.0005
+Train accuracy: 0.993500
+Dev accuracy: 0.819277
+Epoch 43 use 58 seconds.
+Epoch 44...
+Iter: 20/641, Loss: 0.082498
+Iter: 40/641, Loss: 0.055320
+Iter: 60/641, Loss: 0.123996
+Iter: 80/641, Loss: 0.059930
+Iter: 100/641, Loss: 0.062642
+Iter: 120/641, Loss: 0.026341
+Iter: 140/641, Loss: 0.068861
+Iter: 160/641, Loss: 0.069592
+Iter: 180/641, Loss: 0.145122
+Iter: 200/641, Loss: 0.113843
+Iter: 220/641, Loss: 0.083439
+Iter: 240/641, Loss: 0.057068
+Iter: 260/641, Loss: 0.132290
+Iter: 280/641, Loss: 0.207358
+Iter: 300/641, Loss: 0.248818
+Iter: 320/641, Loss: 0.057873
+Iter: 340/641, Loss: 0.197018
+Iter: 360/641, Loss: 0.316984
+Iter: 380/641, Loss: 0.115569
+Iter: 400/641, Loss: 0.052448
+Iter: 420/641, Loss: 0.093334
+Iter: 440/641, Loss: 0.169281
+Iter: 460/641, Loss: 0.205594
+Iter: 480/641, Loss: 0.030014
+Iter: 500/641, Loss: 0.112232
+Iter: 520/641, Loss: 0.075260
+Iter: 540/641, Loss: 0.141396
+Iter: 560/641, Loss: 0.045773
+Iter: 580/641, Loss: 0.087713
+Iter: 600/641, Loss: 0.200480
+Iter: 620/641, Loss: 0.125836
+Iter: 640/641, Loss: 0.041891
+LR: 0.0005
+Train accuracy: 0.997000
+Dev accuracy: 0.819986
+Epoch 44 use 57 seconds.
+Epoch 45...
+Iter: 20/641, Loss: 0.022676
+Iter: 40/641, Loss: 0.089026
+Iter: 60/641, Loss: 0.191760
+Iter: 80/641, Loss: 0.044720
+Iter: 100/641, Loss: 0.069934
+Iter: 120/641, Loss: 0.091527
+Iter: 140/641, Loss: 0.060211
+Iter: 160/641, Loss: 0.117073
+Iter: 180/641, Loss: 0.035304
+Iter: 200/641, Loss: 0.025541
+Iter: 220/641, Loss: 0.144230
+Iter: 240/641, Loss: 0.070724
+Iter: 260/641, Loss: 0.048725
+Iter: 280/641, Loss: 0.305279
+Iter: 300/641, Loss: 0.044248
+Iter: 320/641, Loss: 0.092245
+Iter: 340/641, Loss: 0.151412
+Iter: 360/641, Loss: 0.065187
+Iter: 380/641, Loss: 0.103805
+Iter: 400/641, Loss: 0.081532
+Iter: 420/641, Loss: 0.100634
+Iter: 440/641, Loss: 0.029144
+Iter: 460/641, Loss: 0.105493
+Iter: 480/641, Loss: 0.152964
+Iter: 500/641, Loss: 0.082914
+Iter: 520/641, Loss: 0.085032
+Iter: 540/641, Loss: 0.045965
+Iter: 560/641, Loss: 0.112692
+Iter: 580/641, Loss: 0.249705
+Iter: 600/641, Loss: 0.064014
+Iter: 620/641, Loss: 0.187902
+Iter: 640/641, Loss: 0.055898
+LR: 0.0005
+Train accuracy: 0.996000
+Dev accuracy: 0.822821
+Epoch 45 use 57 seconds.
+Epoch 46...
+Iter: 20/641, Loss: 0.074223
+Iter: 40/641, Loss: 0.078740
+Iter: 60/641, Loss: 0.076664
+Iter: 80/641, Loss: 0.074038
+Iter: 100/641, Loss: 0.039767
+Iter: 120/641, Loss: 0.042220
+Iter: 140/641, Loss: 0.075813
+Iter: 160/641, Loss: 0.201297
+Iter: 180/641, Loss: 0.092699
+Iter: 200/641, Loss: 0.057551
+Iter: 220/641, Loss: 0.025598
+Iter: 240/641, Loss: 0.057025
+Iter: 260/641, Loss: 0.063648
+Iter: 280/641, Loss: 0.059003
+Iter: 300/641, Loss: 0.188940
+Iter: 320/641, Loss: 0.055912
+Iter: 340/641, Loss: 0.156439
+Iter: 360/641, Loss: 0.182121
+Iter: 380/641, Loss: 0.099246
+Iter: 400/641, Loss: 0.147447
+Iter: 420/641, Loss: 0.270036
+Iter: 440/641, Loss: 0.101693
+Iter: 460/641, Loss: 0.043166
+Iter: 480/641, Loss: 0.103694
+Iter: 500/641, Loss: 0.074427
+Iter: 520/641, Loss: 0.068870
+Iter: 540/641, Loss: 0.042793
+Iter: 560/641, Loss: 0.073275
+Iter: 580/641, Loss: 0.148267
+Iter: 600/641, Loss: 0.093520
+Iter: 620/641, Loss: 0.127769
+Iter: 640/641, Loss: 0.146831
+LR: 0.0005
+Train accuracy: 0.993000
+Dev accuracy: 0.821403
+Epoch 46 use 60 seconds.
+Epoch 47...
+Iter: 20/641, Loss: 0.053367
+Iter: 40/641, Loss: 0.083212
+Iter: 60/641, Loss: 0.018718
+Iter: 80/641, Loss: 0.054652
+Iter: 100/641, Loss: 0.051715
+Iter: 120/641, Loss: 0.086626
+Iter: 140/641, Loss: 0.070575
+Iter: 160/641, Loss: 0.047138
+Iter: 180/641, Loss: 0.197781
+Iter: 200/641, Loss: 0.028392
+Iter: 220/641, Loss: 0.197129
+Iter: 240/641, Loss: 0.074961
+Iter: 260/641, Loss: 0.128196
+Iter: 280/641, Loss: 0.045229
+Iter: 300/641, Loss: 0.147587
+Iter: 320/641, Loss: 0.114432
+Iter: 340/641, Loss: 0.044104
+Iter: 360/641, Loss: 0.125976
+Iter: 380/641, Loss: 0.022085
+Iter: 400/641, Loss: 0.098876
+Iter: 420/641, Loss: 0.060335
+Iter: 440/641, Loss: 0.047363
+Iter: 460/641, Loss: 0.098249
+Iter: 480/641, Loss: 0.059460
+Iter: 500/641, Loss: 0.049223
+Iter: 520/641, Loss: 0.097131
+Iter: 540/641, Loss: 0.220848
+Iter: 560/641, Loss: 0.139877
+Iter: 580/641, Loss: 0.077607
+Iter: 600/641, Loss: 0.029240
+Iter: 620/641, Loss: 0.150329
+Iter: 640/641, Loss: 0.159474
+LR: 0.0005
+Train accuracy: 0.995000
+Dev accuracy: 0.822112
+Epoch 47 use 58 seconds.
+Epoch 48...
+Iter: 20/641, Loss: 0.175041
+Iter: 40/641, Loss: 0.117808
+Iter: 60/641, Loss: 0.116546
+Iter: 80/641, Loss: 0.030483
+Iter: 100/641, Loss: 0.060621
+Iter: 120/641, Loss: 0.085503
+Iter: 140/641, Loss: 0.036149
+Iter: 160/641, Loss: 0.101328
+Iter: 180/641, Loss: 0.088571
+Iter: 200/641, Loss: 0.248258
+Iter: 220/641, Loss: 0.122070
+Iter: 240/641, Loss: 0.081254
+Iter: 260/641, Loss: 0.094604
+Iter: 280/641, Loss: 0.042385
+Iter: 300/641, Loss: 0.057707
+Iter: 320/641, Loss: 0.121130
+Iter: 340/641, Loss: 0.100588
+Iter: 360/641, Loss: 0.069288
+Iter: 380/641, Loss: 0.018674
+Iter: 400/641, Loss: 0.095006
+Iter: 420/641, Loss: 0.162667
+Iter: 440/641, Loss: 0.090369
+Iter: 460/641, Loss: 0.127005
+Iter: 480/641, Loss: 0.024461
+Iter: 500/641, Loss: 0.042483
+Iter: 520/641, Loss: 0.061076
+Iter: 540/641, Loss: 0.063739
+Iter: 560/641, Loss: 0.108827
+Iter: 580/641, Loss: 0.092676
+Iter: 600/641, Loss: 0.026059
+Iter: 620/641, Loss: 0.166900
+Iter: 640/641, Loss: 0.132590
+LR: 0.0005
+Train accuracy: 0.995500
+Dev accuracy: 0.817151
+Epoch 48 use 60 seconds.
+Epoch 49...
+Iter: 20/641, Loss: 0.373317
+Iter: 40/641, Loss: 0.082883
+Iter: 60/641, Loss: 0.103719
+Iter: 80/641, Loss: 0.174122
+Iter: 100/641, Loss: 0.041450
+Iter: 120/641, Loss: 0.042201
+Iter: 140/641, Loss: 0.055666
+Iter: 160/641, Loss: 0.110183
+Iter: 180/641, Loss: 0.123078
+Iter: 200/641, Loss: 0.167684
+Iter: 220/641, Loss: 0.163002
+Iter: 240/641, Loss: 0.044944
+Iter: 260/641, Loss: 0.045173
+Iter: 280/641, Loss: 0.083674
+Iter: 300/641, Loss: 0.008027
+Iter: 320/641, Loss: 0.105851
+Iter: 340/641, Loss: 0.087923
+Iter: 360/641, Loss: 0.084334
+Iter: 380/641, Loss: 0.079198
+Iter: 400/641, Loss: 0.231987
+Iter: 420/641, Loss: 0.121657
+Iter: 440/641, Loss: 0.228195
+Iter: 460/641, Loss: 0.053437
+Iter: 480/641, Loss: 0.027865
+Iter: 500/641, Loss: 0.012662
+Iter: 520/641, Loss: 0.054149
+Iter: 540/641, Loss: 0.034646
+Iter: 560/641, Loss: 0.109826
+Iter: 580/641, Loss: 0.257644
+Iter: 600/641, Loss: 0.092915
+Iter: 620/641, Loss: 0.049806
+Iter: 640/641, Loss: 0.149820
+LR: 0.0005
+Train accuracy: 0.998000
+Dev accuracy: 0.819277
+Epoch 49 use 57 seconds.
+Best dev accuracy: 0.826364
