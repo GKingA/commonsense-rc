@@ -9,6 +9,7 @@ import wikiwords
 from utils import is_stopword, is_punc, Utils
 from collections import Counter
 from networkx.readwrite import json_graph
+import threading
 
 
 class Tokens(object):
@@ -478,7 +479,9 @@ def preprocess_4lang(path, vocab):
             result_vocab = {}
             line = vocab.readline().strip()
             while line is not None and line != "":
-                result_vocab[line] = requests.post("http://hlt.bme.hu/4lang/definition", data=json.dumps({'word': line}), headers=headers).json()
+                result_vocab[line] = requests.post("http://hlt.bme.hu/4lang/definition",
+                                                   data=json.dumps({'word': line.lower()}),
+                                                   headers=headers).json()['word']
                 line = vocab.readline().strip()
         with open(path, 'w') as result_file:
             json_result = json.dumps(result_vocab)
@@ -498,11 +501,12 @@ if __name__ == '__main__':
                   '../data/dev-data.json',
                   '../data/train-data.json',
                   '../data/test-data.json']
+    threads = []
     preprocess_4lang(path_4lang, '../data/vocab')
     for data_path in data_paths:
-        # preprocess_4lang_sentences(data_path, 'http://hlt.bme.hu/4lang/default')
+        #preprocess_4lang_sentences(data_path, 'http://hlt.bme.hu/4lang/abstract')
         if data_path.split('/')[2].startswith('test'):
-            preprocess_dataset(data_path, path_4lang, 'http://hlt.bme.hu/4lang/default', is_test_set=True)
+            threading.Thread(target=preprocess_dataset, args=(data_path, path_4lang, 'http://hlt.bme.hu/4lang/expand', True)).start()
         else:
-            preprocess_dataset(data_path, path_4lang, 'http://hlt.bme.hu/4lang/default')
+            threading.Thread(target=preprocess_dataset, args=(data_path, path_4lang, 'http://hlt.bme.hu/4lang/expand')).start()
     # preprocess_race_dataset('../data/RACE/')
