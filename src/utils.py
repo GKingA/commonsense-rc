@@ -169,7 +169,7 @@ class Utils:
 
     def asim_jac_and_dots(self, seq1, seq2):
         intersections = []
-        word_set= []
+        word_set = []
         for s1 in seq1:
             for s2 in seq2:
                 intersection = set(s1[:1]) & set(s2[:1])
@@ -179,7 +179,7 @@ class Utils:
                     intersections += [i for i in intersection]
         if len(intersections) == 0:
             return 0
-        return int(float(len(list(set(intersections)))) / (2.0 * len(set(word_set))) + self.asim_jac(seq1, seq2) / 2.0)
+        return (len(set(intersections)) / len(set(word_set)) + self.asim_jac(seq1, seq2)) / 2
 
 
 vocab, pos_vocab, ner_vocab, rel_vocab = Dictionary(), Dictionary(), Dictionary(), Dictionary()

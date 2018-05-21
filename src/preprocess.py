@@ -229,7 +229,7 @@ def compute_four_lang_sentence_relation(graph1, graph2, four_lang_utils):
     try:
         d_edges = four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graph1))
         q_edges = four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graph2))
-        return int(four_lang_utils.asim_jac_and_dots(d_edges, q_edges) * 100)
+        return int(four_lang_utils.asim_jac(d_edges, q_edges) * 100)
     except Exception:
         print(graph1, graph2)
         raise
