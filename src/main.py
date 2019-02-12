@@ -17,8 +17,11 @@ random.seed(args.seed)
 if __name__ == '__main__':
 
     build_vocab()
-    train_data = load_data('../data/train-data-processed.json')
-    train_data += load_data('../data/trial-data-processed.json')
+    if args.race:
+        train_data = load_data('../data/race-processed.json')
+    else:
+        train_data = load_data('../data/train-data-processed.json')
+        train_data += load_data('../data/trial-data-processed.json')
     dev_data = load_data('../data/dev-data-processed.json')
     if args.test_mode:
         # use validation data as training data
@@ -28,7 +31,10 @@ if __name__ == '__main__':
 
     best_dev_acc = 0.0
     os.makedirs('./checkpoint', exist_ok=True)
-    checkpoint_path = './checkpoint/%d-%s.mdl' % (args.seed, datetime.now().isoformat())
+    if args.model == None:
+        checkpoint_path = './checkpoint/%d-%s.mdl' % (args.seed, datetime.now().isoformat())
+    else:
+        checkpoint_path = './checkpoint/{}'.format(args.model)
     print('Trained model will be saved to %s' % checkpoint_path)
 
     for i in range(args.epoch):

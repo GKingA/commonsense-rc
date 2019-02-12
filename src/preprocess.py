@@ -210,7 +210,7 @@ def tokenize(text):
     return output
 
 
-def compute_four_lang_relation(graphs, four_lang_utils, dict1, dict2):
+def compute_4lang_relation(graphs, four_lang_utils, dict1, dict2):
     d1_d2_four_lang_relation = []
     for d in dict1["words"]:
         all_word_match = []
@@ -218,14 +218,14 @@ def compute_four_lang_relation(graphs, four_lang_utils, dict1, dict2):
             try:
                 d_edges = four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graphs[d]))
                 q_edges = four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graphs[q]))
-                all_word_match.append(int(four_lang_utils.asim_jac_and_dots(d_edges, q_edges) * 100))
+                all_word_match.append(int(four_lang_utils.asim_jac(d_edges, q_edges) * 100))
             except KeyError:
                 all_word_match.append(0)
         d1_d2_four_lang_relation.append(max(all_word_match))
     return d1_d2_four_lang_relation
 
 
-def compute_four_lang_sentence_relation(graph1, graph2, four_lang_utils):
+def compute_4lang_sentence_relation(graph1, graph2, four_lang_utils):
     try:
         d_edges = four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graph1))
         q_edges = four_lang_utils.get_edges(json_graph.adjacency.adjacency_graph(graph2))
@@ -251,20 +251,20 @@ def compute_features(d_dict, q_dict, c_dict, d_id, q_id, c_id, graphs, sentence_
     tf = [float('%.2f' % v) for v in tf]
     d_words = Counter(filter(lambda w: not is_stopword(w) and not is_punc(w), d_dict['words']))
     four_lang_utils = Utils()
-    p_q_four_lang_relation = compute_four_lang_relation(graphs, four_lang_utils, d_dict, q_dict)
-    p_c_four_lang_relation = compute_four_lang_relation(graphs, four_lang_utils, d_dict, c_dict)
-    q_c_four_lang_relation = compute_four_lang_relation(graphs, four_lang_utils, q_dict, c_dict)
+    p_q_four_lang_relation = compute_4lang_relation(graphs, four_lang_utils, d_dict, q_dict)
+    p_c_four_lang_relation = compute_4lang_relation(graphs, four_lang_utils, d_dict, c_dict)
+    q_c_four_lang_relation = compute_4lang_relation(graphs, four_lang_utils, q_dict, c_dict)
     p_q_four_lang_sentence_relation =\
-        compute_four_lang_sentence_relation(sentence_graphs[d_id],
-                                            sentence_graphs[d_id]["questions"][q_id], four_lang_utils)
+        compute_4lang_sentence_relation(sentence_graphs[d_id],
+                                        sentence_graphs[d_id]["questions"][q_id], four_lang_utils)
     p_c_four_lang_sentence_relation =\
-        compute_four_lang_sentence_relation(sentence_graphs[d_id],
-                                            sentence_graphs[d_id]["questions"][q_id]["choice"][c_id],
-                                            four_lang_utils)
+        compute_4lang_sentence_relation(sentence_graphs[d_id],
+                                        sentence_graphs[d_id]["questions"][q_id]["choice"][c_id],
+                                        four_lang_utils)
     q_c_four_lang_sentence_relation =\
-        compute_four_lang_sentence_relation(sentence_graphs[d_id]["questions"][q_id],
-                                            sentence_graphs[d_id]["questions"][q_id]["choice"][c_id],
-                                            four_lang_utils)
+        compute_4lang_sentence_relation(sentence_graphs[d_id]["questions"][q_id],
+                                        sentence_graphs[d_id]["questions"][q_id]["choice"][c_id],
+                                        four_lang_utils)
     from conceptnet import concept_net
     p_q_relation = concept_net.p_q_relation(d_dict['words'], q_dict['words'])
     p_c_relation = concept_net.p_q_relation(d_dict['words'], c_dict['words'])
@@ -356,39 +356,37 @@ def preprocess_4lang_sentences(path, request_path):
         return sentence_graph_results
 
 
-def preprocess_dataset(path, path_4lang_vocab, request_type, is_test_set=False):
+def preprocess_dataset(path, word_4lang_graphs, request_type, is_test_set=False):
     writer = open(path.replace('.json', '') + '-processed.json', 'w', encoding='utf-8')
     ex_cnt = 0
-    with open(path_4lang_vocab, 'r') as json_graphs:
-        graphs = json.loads(json_graphs.read())
-        if os.path.isfile(path.replace('.json', '') + '-4lang-' + request_type.split('/')[-1] + '.json'):
-            with open(path.replace('.json', '') + '-4lang-' + request_type.split('/')[-1] + '.json', 'r') as four_lang_sentences:
-                sentence_graphs = json.loads(four_lang_sentences.read())
-        else:
-            sentence_graphs = preprocess_4lang_sentences(path, request_type)
-        for obj in json.load(open(path, 'r', encoding='utf-8'))['data']['instance']:
-            if not obj['questions']:
-                continue
-            d_dict = tokenize(obj['text'])
-            d_id = path + '_' + obj['@id']
-            try:
-                qs = [q for q in obj['questions']['question']]
-                dummy = qs[0]['@text']
-            except:
-                # some passages have only one question
-                qs = [obj['questions']['question']]
-            for q in qs:
-                q_dict = tokenize(q['@text'])
-                q_id = q['@id']
-                for ans in q['answer']:
-                    c_dict = tokenize(ans['@text'])
-                    label = int(ans['@correct'].lower() == 'true') if not is_test_set else -1
-                    c_id = ans['@id']
-                    example = get_example(d_id, q_id, c_id, d_dict, q_dict, c_dict, label)
-                    example.update(compute_features(d_dict, q_dict, c_dict, d_id.split('_')[-1], q_id, c_id, graphs, sentence_graphs))
-                    writer.write(json.dumps(example))
-                    writer.write('\n')
-                    ex_cnt += 1
+    if os.path.isfile(path.replace('.json', '') + '-4lang-' + request_type.split('/')[-1] + '.json'):
+        with open(path.replace('.json', '') + '-4lang-' + request_type.split('/')[-1] + '.json', 'r') as four_lang_sentences:
+            sentence_graphs = json.loads(four_lang_sentences.read())
+    else:
+        sentence_graphs = preprocess_4lang_sentences(path, request_type)
+    for obj in json.load(open(path, 'r', encoding='utf-8'))['data']['instance']:
+        if not obj['questions']:
+            continue
+        d_dict = tokenize(obj['text'])
+        d_id = path + '_' + obj['@id']
+        try:
+            qs = [q for q in obj['questions']['question']]
+            dummy = qs[0]['@text']
+        except:
+            # some passages have only one question
+            qs = [obj['questions']['question']]
+        for q in qs:
+            q_dict = tokenize(q['@text'])
+            q_id = q['@id']
+            for ans in q['answer']:
+                c_dict = tokenize(ans['@text'])
+                label = int(ans['@correct'].lower() == 'true') if not is_test_set else -1
+                c_id = ans['@id']
+                example = get_example(d_id, q_id, c_id, d_dict, q_dict, c_dict, label)
+                example.update(compute_features(d_dict, q_dict, c_dict, d_id.split('_')[-1], q_id, c_id, word_4lang_graphs, sentence_graphs))
+                writer.write(json.dumps(example))
+                writer.write('\n')
+                ex_cnt += 1
     print('Found %d examples in %s...' % (ex_cnt, path))
     writer.close()
 
@@ -401,24 +399,28 @@ def _get_race_obj(d):
                 yield obj
 
 
-def preprocess_race_dataset(d):
+def is_passage_ok(words, utils):
+    return len(words) >= 50 and len(words) <= 500 and sum([int(w in utils.vocab) for w in words]) >= 0.85 * len(words)
+
+
+def is_question_ok(words):
+    return True
+
+
+def is_option_ok(words):
+    s = ' '.join(words).lower()
+    return s != 'all of the above' and s != 'none of the above'
+
+
+def preprocess_race_dataset(d, graphs, sentence_graphs):
     import utils
     utils.build_vocab()
 
-    def is_passage_ok(words):
-        return len(words) >= 50 and len(words) <= 500 and sum([int(w in utils.vocab) for w in words]) >= 0.85 * len(words)
-
-    def is_question_ok(words):
-        return True
-
-    def is_option_ok(words):
-        s = ' '.join(words).lower()
-        return s != 'all of the above' and s != 'none of the above'
     writer = open('../data/race-processed.json', 'w', encoding='utf-8')
     ex_cnt = 0
     for obj in _get_race_obj(d):
         d_dict = tokenize(obj['article'].replace('\n', ' ').replace('--', ' '))
-        if not is_passage_ok(d_dict['words']):
+        if not is_passage_ok(d_dict['words'], utils):
             continue
         d_id = obj['id']
         assert len(obj['options']) == len(obj['answers']) and len(obj['answers']) == len(obj['questions'])
@@ -438,12 +440,55 @@ def preprocess_race_dataset(d):
                 label = int(c_id == ans)
                 c_id = str(c_id)
                 example = get_example(d_id, q_id, c_id, d_dict, q_dict, c_dict, label)
-                example.update(compute_features(d_dict, q_dict, c_dict))
+                example.update(compute_features(d_dict, q_dict, c_dict, d_id, q_id, c_id, graphs, sentence_graphs))
                 writer.write(json.dumps(example))
                 writer.write('\n')
                 ex_cnt += 1
     print('Found %d examples in %s...' % (ex_cnt, d))
     writer.close()
+
+
+def preprocess_race_4lang(d, endpoint):
+    import requests
+    import re
+    import simplejson
+    if os.path.isfile('../data/RACE-4lang-' + endpoint.split('/')[-1] + '.json'):
+        return json.loads(open('../data/RACE-4lang-' + endpoint.split('/')[-1] + '.json'))
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    sentence_graph_results = {}
+    i = 0
+    for obj in _get_race_obj(d):
+        passage = obj['article'].replace('\n', ' ').replace('--', ' ')
+        sentence_graph_results[obj['id']] = {'adjacency': [], 'directed': True, 'expanded': True, 'graph': [], 'nodes': []}
+        q_cnt = 0
+        sentence_graph_results[obj['id']]['questions'] = {}
+        for q, ans, choices in zip(obj['questions'], obj['answers'], obj['options']):
+            q_id = str(q_cnt)
+            q_cnt += 1
+            ans = ord(ans) - ord('A')
+            assert 0 <= ans < len(choices)
+            question = q.replace('_', ' _ ')
+            sentence_graph_results[obj['id']]['questions'][q_id] = {'adjacency': [], 'directed': True, 'expanded': True, 'graph': [], 'nodes': []}
+            if not is_question_ok(tokenize(question)['words']):
+                continue
+            sentence_graph_results[obj['id']]['questions'][q_id]["choice"] = {}
+            for c_id, choice in enumerate(choices):
+                c_dict = tokenize(choice)
+                if not is_option_ok(c_dict['words']):
+                    continue
+                c_id = str(c_id)
+                sentence_graph_results[obj['id']]['questions'][q_id]["choice"][c_id] = {'adjacency': [], 'directed': True, 'expanded': True, 'graph': [], 'nodes': []}
+        if(i%100 == 0):
+            print(i)
+        i += 1
+    print(i)
+    try:
+        with open('../data/RACE-4lang-' + endpoint.split('/')[-1] + '.json', 'w') as \
+                four_lang_sentences:
+            four_lang_sentences.write(json.dumps(sentence_graph_results))
+        return sentence_graph_results
+    except:
+        return sentence_graph_results
 
 
 def preprocess_conceptnet(path):
@@ -488,6 +533,50 @@ def preprocess_4lang(path, vocab):
             result_file.write(json_result)
 
 
+def update_4lang(path, path_4lang_sentence, word_graphs):
+    update_data = []
+    four_lang_utils = Utils()
+    with open(path, 'r') as processed:
+        sentence_graphs_file = open(path_4lang_sentence, 'r')
+        sentence_graphs = json.loads(sentence_graphs_file.read())
+        lines = processed.read().split("\n")
+        i = 0
+        for line in lines:
+            if line == "":
+                continue
+            json_line = json.loads(line)
+            d_id, q_id, c_id = json_line["id"].split('_')[1:]
+            d_words = tokenize(json_line['d_words'])
+            q_words = tokenize(json_line['q_words'])
+            c_words = tokenize(json_line['c_words'])
+            json_line['p_q_four_lang_relation'] = compute_4lang_relation(word_graphs, four_lang_utils, d_words,
+                                                                         q_words)
+            json_line['p_c_four_lang_relation'] = compute_4lang_relation(word_graphs, four_lang_utils, d_words,
+                                                                         c_words)
+            json_line['q_c_four_lang_relation'] = compute_4lang_relation(word_graphs, four_lang_utils, q_words,
+                                                                         c_words)
+            json_line['p_q_four_lang_sentence_relation'] = \
+                compute_4lang_sentence_relation(sentence_graphs[d_id],
+                                                sentence_graphs[d_id]["questions"][q_id],
+                                                four_lang_utils)
+            json_line['p_c_four_lang_sentence_relation'] = \
+                compute_4lang_sentence_relation(sentence_graphs[d_id],
+                                                sentence_graphs[d_id]["questions"][q_id]["choice"][c_id],
+                                                four_lang_utils)
+            json_line['q_c_four_lang_sentence_relation'] = \
+                compute_4lang_sentence_relation(sentence_graphs[d_id]["questions"][q_id],
+                                                sentence_graphs[d_id]["questions"][q_id]["choice"][c_id],
+                                                four_lang_utils)
+            update_data.append(json_line)
+            i += 1
+        sentence_graphs_file.close()
+    print(path, i)
+    with open(path, 'w') as new_processed:
+        for ud in update_data:
+            new_processed.write(json.dumps(ud))
+            new_processed.write("\n")
+
+
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'conceptnet':
         preprocess_conceptnet('conceptnet-assertions-5.5.5.csv')
@@ -501,12 +590,22 @@ if __name__ == '__main__':
                   '../data/dev-data.json',
                   '../data/train-data.json',
                   '../data/test-data.json']
-    threads = []
+    preprocessed_paths = ['../data/trial-data-processed.json',
+                          '../data/dev-data-processed.json',
+                          '../data/train-data-processed.json',
+                          '../data/test-data-processed.json']
     preprocess_4lang(path_4lang, '../data/vocab')
+
+    word_graphs_file = open(path_4lang, 'r')
+    word_graphs = json.loads(word_graphs_file.read())
     for data_path in data_paths:
-        #preprocess_4lang_sentences(data_path, 'http://hlt.bme.hu/4lang/abstract')
         if data_path.split('/')[2].startswith('test'):
-            threading.Thread(target=preprocess_dataset, args=(data_path, path_4lang, 'http://hlt.bme.hu/4lang/expand', True)).start()
+            threading.Thread(target=preprocess_dataset,
+                             args=(data_path, word_graphs, 'http://hlt.bme.hu/4lang/expand', True)).start()
         else:
-            threading.Thread(target=preprocess_dataset, args=(data_path, path_4lang, 'http://hlt.bme.hu/4lang/expand')).start()
-    # preprocess_race_dataset('../data/RACE/')
+            threading.Thread(target=preprocess_dataset,
+                             args=(data_path, word_graphs, 'http://hlt.bme.hu/4lang/expand')).start()
+    # preprocess_race_4lang('../data/RACE/', 'http://hlt.bme.hu/4lang/expand')
+    preprocess_race_dataset('../data/RACE/', graphs=word_graphs,
+                            sentence_graphs=json.loads(open('../data/RACE-4lang-expand.json').read()))
+    word_graphs_file.close()

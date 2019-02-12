@@ -5,6 +5,7 @@ import wikiwords
 import unicodedata
 import numpy as np
 import re
+from config import args
 
 from collections import Counter
 from nltk.corpus import stopwords
@@ -273,7 +274,7 @@ def gen_submission(data, prediction):
 
 
 def gen_debug_file(data, prediction):
-    writer = open('./data/output.log', 'w', encoding='utf-8')
+    writer = open('../data/output.log', 'w', encoding='utf-8')
     cur_pred, cur_choices = [], []
     for i, ex in enumerate(data):
         if i + 1 == len(data):
@@ -328,7 +329,10 @@ def gen_final_submission(data):
 
 
 def eval_based_on_outputs(path):
-    dev_data = load_data('./data/dev-data-processed.json')
+    if args.test_mode:
+        dev_data = load_data('../data/test-data-processed.json')
+    else:
+        dev_data = load_data('../data/dev-data-processed.json')
     label = [int(ex.label) for ex in dev_data]
     gold, cur_gold = [], []
     for i, ex in enumerate(dev_data):
@@ -348,8 +352,8 @@ def eval_based_on_outputs(path):
 
 if __name__ == '__main__':
     # build_vocab()
-    trial_data = load_data('./data/trial-data-processed.json')
-    train_data = load_data('./data/train-data-processed.json')
-    dev_data = load_data('./data/dev-data-processed.json')
-    test_data = load_data('./data/test-data-processed.json')
+    trial_data = load_data('../data/trial-data-processed.json')
+    train_data = load_data('../data/train-data-processed.json')
+    dev_data = load_data('../data/dev-data-processed.json')
+    test_data = load_data('../data/test-data-processed.json')
     build_vocab(trial_data + train_data + dev_data + test_data)

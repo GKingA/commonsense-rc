@@ -31,6 +31,10 @@ parser.add_argument('--rel_emb_dim', type=int, default=10, help='Embedding dimen
 parser.add_argument('--four_lang_emb_dim', type=int, default=10, help='Embedding dimension for 4lang relations')
 parser.add_argument('--seed', type=int, default=1234, help='random seed')
 parser.add_argument('--test_mode', type='bool', default=False, help='In test mode, validation data will be used for training')
+parser.add_argument('--race', type='bool', default=False, help='Pretrain on race data')
+parser.add_argument('--four_lang', type='bool', default=True, help='Use 4lang embeddings')
+parser.add_argument('--commonsense', type='bool', default=True, help='Use commonsense embeddings')
+parser.add_argument('--model', type=str, default=None, help='What to call the saved model')
 args = parser.parse_args()
 
 print(args)

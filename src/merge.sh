@@ -1,0 +1,1 @@
+python play_with_trained_model.py --pretrained checkpoint/1000-default.mdl,checkpoint/2000-default.mdl,checkpoint/3000-default.mdl,checkpoint/4000-default.mdl,checkpoint/5000-default.mdl,checkpoint/6000-default.mdl,checkpoint/7000-default.mdl,checkpoint/8000-default.mdl,checkpoint/9000-default.mdl --four_lang False --test_mode True >> commonsense_default_merge.txt

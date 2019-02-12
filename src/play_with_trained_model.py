@@ -9,9 +9,9 @@ if __name__ == '__main__':
     build_vocab()
 
     if args.test_mode:
-        dev_data = load_data('./data/test-data-processed.json')
+        dev_data = load_data('../data/test-data-processed.json')
     else:
-        dev_data = load_data('./data/dev-data-processed.json')
+        dev_data = load_data('../data/dev-data-processed.json')
     model_path_list = args.pretrained.split(',')
     for model_path in model_path_list:
         print('Load model from %s...' % model_path)
@@ -27,5 +27,4 @@ if __name__ == '__main__':
         gen_submission(dev_data, prediction)
 
     gen_final_submission(dev_data)
-    if not args.test_mode:
-        eval_based_on_outputs('./answer.txt')
+    eval_based_on_outputs('./answer.txt')

@@ -18,12 +18,12 @@ class TriAN(nn.Module):
         self.pos_embedding.weight.data.normal_(0, 0.1)
         self.ner_embedding = nn.Embedding(len(ner_vocab), args.ner_emb_dim, padding_idx=0)
         self.ner_embedding.weight.data.normal_(0, 0.1)
-        self.rel_embedding = nn.Embedding(len(rel_vocab), args.rel_emb_dim, padding_idx=0)
-        self.rel_embedding.weight.data.normal_(0, 0.1)
-        self.four_lang_embedding = nn.Embedding(101, args.four_lang_emb_dim, padding_idx=0)
-        self.four_lang_embedding.weight.data.normal_(0, 0.1)
-        self.four_lang_sentence_embedding = nn.Embedding(101, args.four_lang_emb_dim, padding_idx=0)
-        self.four_lang_sentence_embedding.weight.data.normal_(0, 0.1)
+        if args.commonsense:
+            self.rel_embedding = nn.Embedding(len(rel_vocab), args.rel_emb_dim, padding_idx=0)
+            self.rel_embedding.weight.data.normal_(0, 0.1)
+        if args.four_lang:
+            self.four_lang_embedding = nn.Embedding(101, args.four_lang_emb_dim, padding_idx=0)
+            self.four_lang_embedding.weight.data.normal_(0, 0.1)
         self.RNN_TYPES = {'lstm': nn.LSTM, 'gru': nn.GRU}
 
         self.p_q_emb_match = layers.SeqAttnMatch(self.embedding_dim)
@@ -31,7 +31,13 @@ class TriAN(nn.Module):
         self.c_p_emb_match = layers.SeqAttnMatch(self.embedding_dim)
 
         # Input size to RNN: word emb + question emb + pos emb + ner emb + manual features
-        doc_input_size = 2 * self.embedding_dim + args.pos_emb_dim + args.ner_emb_dim + 5 + 2 * args.rel_emb_dim + 4 * args.four_lang_emb_dim
+        #doc_input_size = 2 * self.embedding_dim + args.pos_emb_dim + args.ner_emb_dim + 5 + 2 * args.rel_emb_dim + 2 * args.four_lang_emb_dim
+
+        doc_input_size = 2 * self.embedding_dim + args.pos_emb_dim + args.ner_emb_dim + 5
+        if args.four_lang:
+            doc_input_size += 2 * args.four_lang_emb_dim
+        if args.commonsense:
+            doc_input_size += 2 * args.rel_emb_dim
 
         # RNN document encoder
         self.doc_rnn = layers.StackedBRNN(
@@ -45,7 +51,12 @@ class TriAN(nn.Module):
             padding=args.rnn_padding)
 
         # RNN question encoder: word emb + pos emb
-        qst_input_size = self.embedding_dim + args.pos_emb_dim + 2 * args.four_lang_emb_dim
+        #qst_input_size = self.embedding_dim + args.pos_emb_dim + args.four_lang_emb_dim
+
+        qst_input_size = self.embedding_dim + args.pos_emb_dim
+        if args.four_lang:
+            qst_input_size += args.four_lang_emb_dim
+
         self.question_rnn = layers.StackedBRNN(
             input_size=qst_input_size,
             hidden_size=args.hidden_size,
@@ -85,17 +96,16 @@ class TriAN(nn.Module):
     def forward(self, p, p_pos, p_ner, p_mask, q, q_pos, q_mask, c, c_mask, f_tensor, p_q_relation, p_c_relation,
                 p_q_four_lang_relation, p_c_four_lang_relation, q_c_four_lang_relation,
                 p_q_four_lang_sentence_relation, p_c_four_lang_sentence_relation, q_c_four_lang_sentence_relation):
+
         p_emb, q_emb, c_emb = self.embedding(p), self.embedding(q), self.embedding(c)
         p_pos_emb, p_ner_emb, q_pos_emb = self.pos_embedding(p_pos), self.ner_embedding(p_ner), self.pos_embedding(q_pos)
-        p_q_rel_emb, p_c_rel_emb = self.rel_embedding(p_q_relation), self.rel_embedding(p_c_relation)
-        p_q_four_lang_emb, p_c_four_lang_emb, q_c_four_lang_emb =\
-            self.four_lang_embedding(p_q_four_lang_relation),\
-            self.four_lang_embedding(p_c_four_lang_relation),\
-            self.four_lang_embedding(q_c_four_lang_relation)
-        p_q_four_lang_sentence_emb, p_c_four_lang_sentence_emb, q_c_four_lang_sentence_emb =\
-            self.four_lang_sentence_embedding(p_q_four_lang_sentence_relation), \
-            self.four_lang_sentence_embedding(p_c_four_lang_sentence_relation), \
-            self.four_lang_sentence_embedding(q_c_four_lang_sentence_relation)
+        if self.args.commonsense:
+            p_q_rel_emb, p_c_rel_emb = self.rel_embedding(p_q_relation), self.rel_embedding(p_c_relation)
+        if self.args.four_lang:
+            p_q_four_lang_emb, p_c_four_lang_emb, q_c_four_lang_emb =\
+                self.four_lang_embedding(p_q_four_lang_relation),\
+                self.four_lang_embedding(p_c_four_lang_relation),\
+                self.four_lang_embedding(q_c_four_lang_relation)
 
         # Dropout on embeddings
         if self.args.dropout_emb > 0:
@@ -105,14 +115,13 @@ class TriAN(nn.Module):
             p_pos_emb = nn.functional.dropout(p_pos_emb, p=self.args.dropout_emb, training=self.training)
             p_ner_emb = nn.functional.dropout(p_ner_emb, p=self.args.dropout_emb, training=self.training)
             q_pos_emb = nn.functional.dropout(q_pos_emb, p=self.args.dropout_emb, training=self.training)
-            p_q_rel_emb = nn.functional.dropout(p_q_rel_emb, p=self.args.dropout_emb, training=self.training)
-            p_c_rel_emb = nn.functional.dropout(p_c_rel_emb, p=self.args.dropout_emb, training=self.training)
-            p_q_four_lang_emb = nn.functional.dropout(p_q_four_lang_emb, p=self.args.dropout_emb, training=self.training)
-            p_c_four_lang_emb = nn.functional.dropout(p_c_four_lang_emb, p=self.args.dropout_emb, training=self.training)
-            q_c_four_lang_emb = nn.functional.dropout(q_c_four_lang_emb, p=self.args.dropout_emb, training=self.training)
-            p_q_four_lang_sentence_emb = nn.functional.dropout(p_q_four_lang_sentence_emb, p=self.args.dropout_emb, training=self.training)
-            p_c_four_lang_sentence_emb = nn.functional.dropout(p_c_four_lang_sentence_emb, p=self.args.dropout_emb, training=self.training)
-            q_c_four_lang_sentence_emb = nn.functional.dropout(q_c_four_lang_sentence_emb, p=self.args.dropout_emb, training=self.training)
+            if self.args.commonsense:
+                p_q_rel_emb = nn.functional.dropout(p_q_rel_emb, p=self.args.dropout_emb, training=self.training)
+                p_c_rel_emb = nn.functional.dropout(p_c_rel_emb, p=self.args.dropout_emb, training=self.training)
+            if self.args.four_lang:
+                p_q_four_lang_emb = nn.functional.dropout(p_q_four_lang_emb, p=self.args.dropout_emb, training=self.training)
+                p_c_four_lang_emb = nn.functional.dropout(p_c_four_lang_emb, p=self.args.dropout_emb, training=self.training)
+                q_c_four_lang_emb = nn.functional.dropout(q_c_four_lang_emb, p=self.args.dropout_emb, training=self.training)
 
         p_q_weighted_emb = self.p_q_emb_match(p_emb, q_emb, q_mask)
         c_q_weighted_emb = self.c_q_emb_match(c_emb, q_emb, q_mask)
@@ -122,11 +131,22 @@ class TriAN(nn.Module):
         c_p_weighted_emb = nn.functional.dropout(c_p_weighted_emb, p=self.args.dropout_emb, training=self.training)
         # print('p_q_weighted_emb', p_q_weighted_emb.size())
 
-        p_rnn_input = torch.cat([p_emb, p_q_weighted_emb, p_pos_emb, p_ner_emb, f_tensor, p_q_rel_emb, p_c_rel_emb,
-                                 p_c_four_lang_emb, p_q_four_lang_emb, p_c_four_lang_sentence_emb,
-                                 p_q_four_lang_sentence_emb], dim=2)
+        if self.args.four_lang and self.args.commonsense:
+            p_rnn_input = torch.cat([p_emb, p_q_weighted_emb, p_pos_emb, p_ner_emb, f_tensor, p_q_rel_emb, p_c_rel_emb, p_c_four_lang_emb, p_q_four_lang_emb], dim=2)
+        elif self.args.four_lang:
+            p_rnn_input = torch.cat([p_emb, p_q_weighted_emb, p_pos_emb, p_ner_emb, f_tensor, p_c_four_lang_emb, p_q_four_lang_emb], dim=2)
+        elif self.args.commonsense:
+            p_rnn_input = torch.cat([p_emb, p_q_weighted_emb, p_pos_emb, p_ner_emb, f_tensor, p_q_rel_emb, p_c_rel_emb], dim=2)
+        else:
+            p_rnn_input = torch.cat([p_emb, p_q_weighted_emb, p_pos_emb, p_ner_emb, f_tensor], dim=2)
+
         c_rnn_input = torch.cat([c_emb, c_q_weighted_emb, c_p_weighted_emb], dim=2)
-        q_rnn_input = torch.cat([q_emb, q_pos_emb, q_c_four_lang_emb, q_c_four_lang_sentence_emb], dim=2)
+
+        if self.args.four_lang:
+            q_rnn_input = torch.cat([q_emb, q_pos_emb, q_c_four_lang_emb], dim=2)
+        else:
+            q_rnn_input = torch.cat([q_emb, q_pos_emb], dim=2)
+
         # print('p_rnn_input', p_rnn_input.size())
 
         p_hiddens = self.doc_rnn(p_rnn_input, p_mask)
